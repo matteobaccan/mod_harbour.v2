@@ -1,0 +1,124 @@
+User Funcs				| Notes
+------------------------+--------------------------------
+//	Out
+//	---
+AP_RPUTS				| + 
+AP_ECHO                 | +
+AP_RWRITE               | - 
+MH_EXITSTATUS           | +
+
+//	In
+//	--
+
+AP_BODY					| +
+AP_GETBODY              | - should not be used
+AP_POSTPAIRS            | +
+AP_GETPAIRS             | +
+MH_WRITE                | - 
+AP_SETCONTENTTYPE       | +
+AP_ARGS                 | +
+AP_ARGS_TO_TABLE        | ? pending to try
+AP_PARSE_FROM_DATA      | ?
+
+//	Headers
+//	-------
+
+AP_HEADERSIN			| +	
+AP_HEADERSOUT			| +
+AP_HEADERSINKEY			| -
+AP_HEADERSINVAL         | -
+AP_HEADERSINCOUNT       | -
+AP_HEADERSOUTCOUNT      | -
+AP_HEADERSOUTKEY        | -
+AP_HEADERSOUTVAL		| -
+AP_HEADERSOUTSET        | -
+
+//	System
+//	------
+
+AP_FILENAME				| +
+AP_GETENV               | + 
+AP_METHOD               | +
+AP_USERIP               | +
+
+//	Cookies
+//	-------
+
+MH_SETCOOKIE            | + Cookies func --> Should be AP_xxx ?
+MH_GETCOOKIES           | +
+AP_COOKIE_REMOVE        | ?
+AP_COOKIE_READ          | ?
+AP_COOKIE_WRITE         | ?
+AP_COOKIE_CHECK_STRING  | ?
+    
+//	Others
+//	------
+	
+MH_PATHURL              | +
+MH_PATHBASE             | +
+MH_INCLUDE              | -  
+MH_OBJTOCHAR			| +
+MH_VALTOCHAR            | +
+MH_MODBUILDDATE         | +
+MH_MODNAME              | +
+MH_MODVERSION           | +
+MH_LOADFILE             | +
+
+//	Mutex
+//	-----
+
+MH_STARTMUTEX           | +
+MH_ENDMUTEX             | +
+
+//	Error
+//	-----
+
+MH_ERRORBLOCK           | +
+MH_DOERROR              | +
+
+//	HRBs
+//	----
+
+MH_LOADHRB              | +
+
+
+//	Persistence
+//	-----------
+
+MH_HASHGET              | +
+MH_HASHSET				| +
+
+// 	Prepro
+//	------
+
+MH_EXECUTE              | +
+MH_EXECUTEHRB           | +
+MH_COMPILE              | +
+MH_INLINEPRG            | +
+MH_REPLACEBLOCKS        | +
+MH_ISFUN                | +
+MH_PHPPREPRO            | +
+MH_PHPCODEPOST          | +
+MH_PHPFILEPOST          | +
+
+//	Session
+//	-------
+
+MH_SESSIONINIT          | +
+MH_SESSION              | +
+MH_SESSIONWRITE         | +
+MH_SESSIONACTIVE        | + 
+MH_SESSIONEND           | +
+
+//	Code/Decode
+//	-----------
+
+HB_HTMLENCODE			| +
+HB_URLDECODE			| +
+
+//	Trace 
+//	-----
+
+_d						| +
+_w						| +
+_l						| +
