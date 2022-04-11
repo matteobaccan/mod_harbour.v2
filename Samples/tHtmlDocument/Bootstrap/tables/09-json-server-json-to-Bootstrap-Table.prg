@@ -27,7 +27,7 @@ procedure main()
     oHTMLDoc:=THtmlDocument():New(cHTML)
 
     oHeadTitle:=oHTMLDoc:Head:title
-    oHeadTitle:text:="MOD_HARBOUR :: CURL :: JSON-SERVER/JSON to Bootstrap table"
+    oHeadTitle:text:="MOD_HARBOUR :: XMLHTTP :: JSON-SERVER/JSON to Bootstrap table"
     
     oDivContainer:=oHTMLDoc:body:div
     oDivContainer:attr:='class="container"'
@@ -35,7 +35,7 @@ procedure main()
     oDivPageHeader:=oDivContainer+"div"
     oDivPageHeader:attr:='class="page-header"'
     oDivPageHeaderH2:=oDivPageHeader:h2
-    oDivPageHeaderH2:text:="MOD_HARBOUR :: CURL :: JSON-SERVER/JSON to Bootstrap table"
+    oDivPageHeaderH2:text:="MOD_HARBOUR :: XMLHTTP :: JSON-SERVER/JSON to Bootstrap table"
     
     oDivPageHeaderRow:=oDivContainer+"div"
     oDivPageHeaderRow:attr:='class="row"'
@@ -60,7 +60,7 @@ procedure main()
 &lt;script src="./json-to-Bootstrap-Table/example/jsonToTable.js"&gt;&lt;/script&gt;
 &lt;script&gt;
     var dtbl = new createTable({
-    url:'./json-to-Bootstrap-Table/example/JSONToBootstrapTable.prg?file=json-server&clientURL=CURL',
+    url:'./json-to-Bootstrap-Table/example/JSONToBootstrapTable.prg?file=json-server&clientURL=XMLHTTP',
     wrapper:".createTableJSON"
     }).create();
 &lt;/script&gt;
@@ -145,7 +145,7 @@ MIT
     TEXT INTO oScript:text
 var dtbl=new createTable(
     {
-        url:'./json-to-Bootstrap-Table/example/JSONToBootstrapTable.prg?file=json-server&clientURL=CURL',
+        url:'./json-to-Bootstrap-Table/example/JSONToBootstrapTable.prg?file=json-server&clientURL=XMLHTTP',
         wrapper:".createTableJSON"
     }
 ).create();
