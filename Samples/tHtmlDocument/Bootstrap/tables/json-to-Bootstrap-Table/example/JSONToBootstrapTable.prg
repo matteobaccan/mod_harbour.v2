@@ -70,7 +70,7 @@ static function getJsonServerData()
 
         if (!empty(hcURL:=cURL_easy_init()))
             //https://github.com/naldodj/naldodj-json-server-multiple-files
-            cURL:="http://localhost:3002/db/get/JSONToBootstrapTable.json"
+            cURL:="http://naldodj-28214.portmap.io:28214/db/get/JSONToBootstrapTable.json"
             cURL_easy_setopt(hcURL,HB_CURLOPT_URL,cURL)
             cURL_easy_setopt(hcURL,HB_CURLOPT_SSL_VERIFYPEER,.f.)
             cURL_easy_setopt(hcURL,HB_CURLOPT_SSL_VERIFYHOST,.f.)
