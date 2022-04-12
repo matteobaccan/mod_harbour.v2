@@ -1,22 +1,46 @@
 <html>
     <head>
         <title></title>
-        <link href="http://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <style>
-            body {
-                padding-top: 2rem;
-                padding-bottom: 2rem;
-            }
-            .row {
-                margin-top: 1rem;
-                margin-bottom: 1rem;
-            }
-            .row .row {
-                margin-top: 1rem;
-                margin-bottom: 0;
-            }
-        </style>
+        <!-- Required meta tags -->
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!--  -->    
+        <!-- Bootstrap CSS -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <!--  -->    
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+            <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <!--  -->    
+        <!-- https://materializecss.com -->
+            <!-- Compiled and minified CSS -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+            <!-- Compiled and minified JavaScript -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+            <!-- https://materializecss.com/icons.html -->
+                <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+            <!--  -->    
+        <!--  -->    
     </head>
     <body>
     </body>
+    <footer>
+        <div class="fixed-action-btn right" id="ID_fixed-action-btn-arrow_back">
+            <a class="btn-floating btn-large tooltipped" data-position="top" data-tooltip="Back" onclick="window.open('../tables/','_top');">
+                <i id="ID_fixed-action-btn-i-arrow_back_icon" class="material-icons" style="user-select: none;">arrow_back</i>
+            </a>
+            <script>
+                <!-- https://materializecss.com/floating-action-button.html -->
+                $(document).ready(function(){
+                    $('.fixed-action-btn').floatingActionButton();
+                });
+                <!-- https://materializecss.com/tooltips.html -->
+                $(document).ready(function(){
+                    $('.tooltipped').tooltip();
+                });                  
+            </script>
+        </div>
+    </footer>
 </html>

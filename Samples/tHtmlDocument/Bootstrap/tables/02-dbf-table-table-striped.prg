@@ -48,10 +48,11 @@ procedure main()
     /* Operator ":" returns first "div" from body (creates if not existent) */
     oDiv:=oHTMLDoc:body:div
     oDiv:attr:='class="container"'
-
-    /* Operator ":" returns first "h1" from div (creates if not existent) */
-    oNode:=oDiv:h1
-    oNode:text:=cTitle
+    
+    /* Operator ":" returns first "h4" from div (creates if not existent) */
+    oNode:=oDiv:h4
+    oNode:attr:='class="page-header"'
+    oNode:text:=cTitle    
 
     /* Operator ":" returns first "hr" from div (creates if not existent) */
     oNode:=oDiv:hr
