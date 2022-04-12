@@ -32,7 +32,7 @@ procedure main()
 
     cAlias:=alias()
 
-    cHTML:=BS_StarterTemplate()
+    cHTML:=BootstrapStarterTemplate()
     oHTMLDoc:=THtmlDocument():New(cHTML)
 
     cTitle:="mod_harbour :: Bootstrap :: Tables :: table-striped"
@@ -147,5 +147,5 @@ procedure main()
 
     return
 
-{% MH_LoadFile( '..\pluggins\templates\BS_StarterTemplate.prg') %}
+{% MH_LoadFile( '..\pluggins\templates\BootstrapStarterTemplate.prg') %}
 {% MH_LoadFile( '..\pluggins\templates\addHarbourPRGFileAsCodeText.prg') %}

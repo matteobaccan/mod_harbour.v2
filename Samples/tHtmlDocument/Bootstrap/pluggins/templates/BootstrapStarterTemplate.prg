@@ -1,4 +1,4 @@
-static function BS_StarterTemplate()
+static function BootstrapStarterTemplate()
 
    local cHTML as character
 
