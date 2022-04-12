@@ -16,7 +16,7 @@ function Main()
     local cDbf as character
     local cAlias as character
     local cData as character
-    
+
     local lCURL as logical
 
     local hData as hash
@@ -55,7 +55,7 @@ function Main()
     if (empty(cData))
         TEXT INTO cData
             [
-                {"id": 1,"gender": "Male","first_name": "none","last_name": "none","email": "none@ebay.com","ip_address": "65.239.17.202"}, 
+                {"id": 1,"gender": "Male","first_name": "none","last_name": "none","email": "none@ebay.com","ip_address": "65.239.17.202"},
                 {"id": 2,"gender": "Male","first_name": "none","last_name": "none","email": "none@cbsnews.com","ip_address": "69.21.244.122"}
             ]
         ENDTEXT
@@ -73,22 +73,22 @@ static function getJsonServerData(lCURL as logical)
     local cBuffer as character
 
     local hcURL as hash
-    
+
     local nError as numeric
-    
+
     local lServerXMLHTTP as logical
-    
+
     local oXMLHTTP as object
-    
+
     local xValue
 
     //https://github.com/naldodj/naldodj-json-server-multiple-files
     cURL:="http://naldodj-28214.portmap.io:28214/db/get/JSONToBootstrapTable.json"
 
     hb_Default(@lCURL,.T.)
-    
+
     if (lCURL)
-    
+
         cURL_global_init()
 
             if (!empty(hcURL:=cURL_easy_init()))
@@ -111,7 +111,7 @@ static function getJsonServerData(lCURL as logical)
             endif
 
         cURL_global_cleanup()
-    
+
     else
 
          //https://msdn.microsoft.com/es-es/library/ms535874(v=vs.85).aspx#methods
@@ -146,7 +146,7 @@ static function getJsonServerData(lCURL as logical)
             endswitch
 
          END TRY
-    
+
     endif
 
 return(cBuffer)
