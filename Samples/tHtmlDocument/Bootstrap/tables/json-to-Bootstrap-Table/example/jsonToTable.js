@@ -3,16 +3,16 @@
  * JSON parsing is handled by the library and it only requires a direct source call
  * http(s)://, ftp://, file:// and javascript:; links are automatically computed
  *
- * Example of expected JSON data  - 
- *	var jsonObj = '[{"Total":"34","Version":"1.0.4","Office":"New York"},{"Total":"67","Version":"1.1.0","Office":"Paris"}]';
+ * Example of expected JSON data  -
+ *    var jsonObj = '[{"Total":"34","Version":"1.0.4","Office":"New York"},{"Total":"67","Version":"1.1.0","Office":"Paris"}]';
  *
  * Code sample to create a Bootstrap Table. It makes an ajax call directly.
- *	var dtbl = new createTable({ url:'example.json', wrapper:".createTableJSON" }).create();
+ *    var dtbl = new createTable({ url:'example.json', wrapper:".createTableJSON" }).create();
  *
  * Another example with direct data source -
- * 	var jsonObj = '[{"Total":"34","Version":"1.0.4","Office":"New York"},{"Total":"67","Version":"1.1.0","Office":"Paris"}]';
- * 	var dtbl = new createTable({ data:jsonObj, wrapper:".createTableJSON" }).create();
- * 
+ *     var jsonObj = '[{"Total":"34","Version":"1.0.4","Office":"New York"},{"Total":"67","Version":"1.1.0","Office":"Paris"}]';
+ *     var dtbl = new createTable({ data:jsonObj, wrapper:".createTableJSON" }).create();
+ *
  * Code sample explaned
  *  - createTable is the function that does the job
  *  - url/data - data source
@@ -32,7 +32,7 @@
 
     /*
      * @class createTable
-     * 
+     *
      * @param options - Configuration Options. optional
      */
 
@@ -78,7 +78,7 @@
 
     /*
      * @prototype create
-     * 
+     *
      * @throws error if no data passed
      */
     createTable.prototype.create = function() {

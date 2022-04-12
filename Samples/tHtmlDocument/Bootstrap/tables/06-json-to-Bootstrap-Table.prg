@@ -5,22 +5,22 @@ procedure main()
 
     local oScript as object
     local oHTMLDoc as object
-    
+
     local oHeadTitle as object
-    
+
     local oDivContainer as object
-    
-    local oDivPageHeader as object  
-    local oDivPageHeaderH3 as object 
-    local oDivPageHeaderRow as object 
-    local oDivPageHeaderRowH5 as object  
-    local oDivPageHeaderRowDiv as object 
-    
+
+    local oDivPageHeader as object
+    local oDivPageHeaderH3 as object
+    local oDivPageHeaderRow as object
+    local oDivPageHeaderRowH5 as object
+    local oDivPageHeaderRowDiv as object
+
     local oDivCreateTableJSON as object
-    
+
     local oFigureHighlight as object
     local oFigureHighlightPre as object
-    local oFigureHighlightPreH4 as object 
+    local oFigureHighlightPreH4 as object
     local oFigureHighlightPreCode as object
 
     cHTML:=hb_MemoRead(hb_GetEnv('PRGPATH')+"/json-to-Bootstrap-Table/example/index-json-dbf.html")
@@ -28,33 +28,33 @@ procedure main()
 
     oHeadTitle:=oHTMLDoc:Head:title
     oHeadTitle:text:="MOD_HARBOUR :: JSON/JSON to Bootstrap table"
-    
+
     oDivContainer:=oHTMLDoc:body:div
     oDivContainer:attr:='class="container"'
-    
+
     oDivPageHeader:=oDivContainer+"div"
     oDivPageHeader:attr:='class="page-header"'
     oDivPageHeaderH3:=oDivPageHeader:h3
     oDivPageHeaderH3:text:="mod_harbour :: JSON/JSON to Bootstrap table"
-    
+
     oDivPageHeaderRow:=oDivContainer+"div"
-    
+
     oDivPageHeaderRowH5:=oDivPageHeaderRow:h5
     oDivPageHeaderRowH5:text:="mod_harbour :: Bootstrap Table with JSON Data - Ajax request"
-    
+
     oDivPageHeaderRowDiv:=oDivPageHeaderRow+"div"
     oDivCreateTableJSON:=oDivPageHeaderRowDiv+"div"
     oDivCreateTableJSON:attr:='class="createTableJSON"'
-    
+
     oFigureHighlight:=oDivPageHeaderRowDiv:AddNode(THtmlNode():New(oDivPageHeaderRowDiv,"figure"))
         oFigureHighlight:attr:='class="highlight"'
-        
+
         oFigureHighlightPre:=oFigureHighlight+"pre"
         oFigureHighlightPreH4:=oFigureHighlightPre+"h4"
         oFigureHighlightPreH4:text:="Code Used"
-        
+
         oFigureHighlightPreCode:=oFigureHighlightPre+"code"
-        
+
         TEXT INTO oFigureHighlightPreCode:text
 &lt;script src="./json-to-Bootstrap-Table/example/jsonToTable.js"&gt;&lt;/script&gt;
 &lt;script&gt;
@@ -67,7 +67,7 @@ procedure main()
 
         oFigureHighlightPreH4:=oFigureHighlightPre+"h4"
         oFigureHighlightPreH4:text:="To Pass a Data instead of URL"
-        
+
         oFigureHighlightPreCode:=oFigureHighlightPre+"code"
         TEXT INTO oFigureHighlightPreCode:text
 &lt;script src="./json-to-Bootstrap-Table/example/jsonToTable.js"&gt;&lt;/script&gt;
@@ -85,13 +85,13 @@ procedure main()
         oFigureHighlightPreCode:=oFigureHighlightPre+"code"
         TEXT INTO oFigureHighlightPreCode:text
 [
-    {"id": 1,"gender": "Male","first_name": "Randy","last_name": "Russell","email": "rrussell0@ebay.com","ip_address": "65.239.17.202"}, 
+    {"id": 1,"gender": "Male","first_name": "Randy","last_name": "Russell","email": "rrussell0@ebay.com","ip_address": "65.239.17.202"},
     {"id": 2,"gender": "Male","first_name": "Mark","last_name": "Ryan","email": "mryan1@cbsnews.com","ip_address": "69.21.244.122"}.... & more
 ]
         ENDTEXT
 
     oFigureHighlight:=oDivPageHeaderRowDiv:AddNode(THtmlNode():New(oDivPageHeaderRowDiv,"/figure"))
-    
+
     oScript:=oHTMLDoc:body+"script"
     oScript:src:="./json-to-Bootstrap-Table/example/jsonToTable.min.js"
 
@@ -105,8 +105,12 @@ var dtbl=new createTable(
 ).create();
     ENDTEXT
 
+    addHarbourPRGFileAsCodeText(oHTMLDoc:body:div,hb_getenv('PRGPATH')+'/06-json-to-Bootstrap-Table.prg')
+
     cHTML:=oHTMLDoc:toString()
 
     ??cHTML
 
     return
+
+{% MH_LoadFile( '..\pluggins\templates\addHarbourPRGFileAsCodeText.prg') %}

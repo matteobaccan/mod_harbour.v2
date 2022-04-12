@@ -8,10 +8,10 @@ procedure main()
 
     local aDbStruct as array
 
-    local cDbf as character 
+    local cDbf as character
     local cHTML as character
     local cTitle as character
-    local cAlias as character 
+    local cAlias as character
 
     local oRow as object
     local oDiv as object
@@ -21,27 +21,27 @@ procedure main()
     local oThead as object
     local oTBody as object
     local oHTMLDoc as object
-    
+
     local nField as numeric
     local nFields as numeric
-    
+
     local xValue
 
     cDbf:=hb_getenv('PRGPATH')+'/data/items.dbf'
-    use (cDbf) shared new 
- 
-    cAlias:=alias()  
+    use (cDbf) shared new
+
+    cAlias:=alias()
 
     cHTML:=BS_StarterTemplate()
     oHTMLDoc:=THtmlDocument():New(cHTML)
-    
+
     cTitle:="mod_harbour :: Bootstrap :: Tables :: table"
 
     /* Operator "+" creates a new node */
     oNode:=oHTMLDoc:head+"meta"
     oNode:name:="Generator"
     oNode:content:="THtmlDocument"
-    
+
     oNode:=oHTMLDoc:head+"title"
     oNode:text:=cTitle
 
@@ -83,20 +83,20 @@ procedure main()
     oNode-="font"
 
     oNode+="hr"
-    
+
     /* Operator ":" returns first "table" from div (creates if not existent) */
     oTable:=oDiv:table
     oTable:attr:='class="table"'
-    
+
     oThead:=oTable:AddNode(THtmlNode():New(oTable,"thead"))
-    
+
         oRow:=oThead:AddNode(THtmlNode():New(oThead,"tr"))
-        
+
         oCell:=oRow:AddNode(THtmlNode():New(oRow,"th"))
         oCell:scope:="row"
         oCell:text:="#"
         oCell:=oCell-"th"
-        
+
         nFields:=(cAlias)->(fCount())
         for nField:=1 to nFields
             oCell:=oRow:AddNode(THtmlNode():New(oRow,"th"))
@@ -104,11 +104,11 @@ procedure main()
             oCell:text:=(cAlias)->(FieldName(nField))
             oCell:=oCell-"th"
         next nField
-        
+
         oRow:=oRow-"tr"
-    
+
     oThead:=oTable:AddNode(THtmlNode():New(oTable,"/thead"))
-    
+
     oTBody:=oTable:AddNode(THtmlNode():New(oTable,"tbody"))
 
         aDbStruct:=(cAlias)->(dbStruct())
@@ -125,24 +125,27 @@ procedure main()
                 if (aDbStruct[nField][DBS_TYPE]=="C")
                     xValue:=allTrim(xValue)
                 endif
-                oCell:text:=xValue                
+                oCell:text:=xValue
                 oCell:=oCell-"td"
             next nField
             oRow:=oRow-"tr"
             (cAlias)->(dbSkip())
         end while
-    
+
     oTBody:=oTable:AddNode(THtmlNode():New(oTable,"/tbody"))
-    
+
     oNode:=oTable:caption
     oNode:text:=hb_NTos((cAlias)->(RecCount()))+" records from database "+cAlias
-    
+
     (cAlias)->(dbCloseArea())
+
+    addHarbourPRGFileAsCodeText(oHTMLDoc:body:div,hb_getenv('PRGPATH')+'/01-dbf-table-table.prg')
 
     cHTML:=oHTMLDoc:toString()
 
     ??cHTML
 
     return
-    
-{% MH_LoadFile( '..\pluggins\templates\BS_StarterTemplate.prg') %}    
+
+{% MH_LoadFile( '..\pluggins\templates\BS_StarterTemplate.prg') %}
+{% MH_LoadFile( '..\pluggins\templates\addHarbourPRGFileAsCodeText.prg') %}
