@@ -86,6 +86,10 @@ static function getJsonServerData(lCURL as logical)
     cURL:="http://naldodj-28214.portmap.io:28214/db/get/JSONToBootstrapTable.json"
 
     hb_Default(@lCURL,.T.)
+    
+    #ifndef __PLATFORM__WINDOWS
+        lCURL:=.T.
+    #endif
 
     if (lCURL)
 
@@ -98,6 +102,8 @@ static function getJsonServerData(lCURL as logical)
                 cURL_easy_setopt(hcURL,HB_CURLOPT_NOPROGRESS,.f.)
                 cURL_easy_setopt(hcURL,HB_CURLOPT_VERBOSE,.t.)
                 cURL_easy_setopt(hcURL,HB_CURLOPT_DL_BUFF_SETUP)
+                cURL_easy_setopt(hcURL,HB_CURLOPT_TIMEOUT,TIMEOUT_Resolve)
+                cURL_easy_setopt(hcURL,HB_CURLOPT_CONNECTTIMEOUT,TIMEOUT_Connect)                
                 if (cURL_easy_perform(hcURL)==HB_CURLE_OK)
                     xValue:=curl_easy_getinfo(hcURL,HB_CURLINFO_RESPONSE_CODE,@nError)
                     if (nError==HB_CURLE_OK)
