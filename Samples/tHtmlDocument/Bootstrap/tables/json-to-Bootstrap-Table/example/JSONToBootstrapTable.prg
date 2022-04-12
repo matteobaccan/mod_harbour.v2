@@ -139,9 +139,11 @@ static function getJsonServerData(lCURL as logical)
             oXMLHTTP:SetRequestHeader( "Content-Type", "application/json;charset=utf-8" )
             oXMLHTTP:Send()
 
-            IF ( ( oXMLHTTP:STATUS == 200 ) .OR. ( oXMLHTTP:STATUS == 202 ) )
-               cBuffer:=oXMLHTTP:ResponseText
-            ENDIF
+            switch (oXMLHTTP:STATUS)
+            case 200
+            case 202
+                cBuffer:=oXMLHTTP:ResponseText
+            endswitch
 
          END TRY
     
