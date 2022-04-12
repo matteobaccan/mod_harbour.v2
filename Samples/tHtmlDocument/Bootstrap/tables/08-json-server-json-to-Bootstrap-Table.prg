@@ -11,9 +11,9 @@ procedure main()
     local oDivContainer as object
     
     local oDivPageHeader as object  
-    local oDivPageHeaderH2 as object 
+    local oDivPageHeaderH4 as object 
     local oDivPageHeaderRow as object 
-    local oDivPageHeaderRowH4 as object  
+    local oDivPageHeaderRowH5 as object  
     local oDivPageHeaderRowDiv as object 
     
     local oDivCreateTableJSON as object
@@ -34,14 +34,13 @@ procedure main()
     
     oDivPageHeader:=oDivContainer+"div"
     oDivPageHeader:attr:='class="page-header"'
-    oDivPageHeaderH2:=oDivPageHeader:h2
-    oDivPageHeaderH2:text:="MOD_HARBOUR :: CURL :: JSON-SERVER/JSON to Bootstrap table"
+    oDivPageHeaderH4:=oDivPageHeader:h4
+    oDivPageHeaderH4:text:="MOD_HARBOUR :: CURL :: JSON-SERVER/JSON to Bootstrap table"
     
     oDivPageHeaderRow:=oDivContainer+"div"
-    oDivPageHeaderRow:attr:='class="row"'
     
-    oDivPageHeaderRowH4:=oDivPageHeaderRow:h4
-    oDivPageHeaderRowH4:text:="mod_harbour :: Bootstrap Table with JSON Data - Ajax request"
+    oDivPageHeaderRowH5:=oDivPageHeaderRow:h5
+    oDivPageHeaderRowH5:text:="mod_harbour :: Bootstrap Table with JSON Data - Ajax request"
     
     oDivPageHeaderRowDiv:=oDivPageHeaderRow+"div"
     oDivCreateTableJSON:=oDivPageHeaderRowDiv+"div"
