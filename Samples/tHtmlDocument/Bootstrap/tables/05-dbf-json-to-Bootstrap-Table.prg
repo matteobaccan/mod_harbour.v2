@@ -3,11 +3,15 @@ procedure main()
 
     local cHTML as character
 
+    local oLang as object
     local oHTMLDoc as object
     local oHeadTitle as object
 
     cHTML:=hb_MemoRead(hb_GetEnv('PRGPATH')+"/json-to-Bootstrap-Table/example/index-dbf.html")
     oHTMLDoc:=THtmlDocument():New(cHTML)
+
+    oLang:=oHTMLDoc:root:html
+    oLang:attr:={"lang"=>"en"}
 
     oHeadTitle:=oHTMLDoc:Head:title
     oHeadTitle:text:="MOD_HARBOUR :: DBF/JSON to Bootstrap table"
@@ -20,4 +24,4 @@ procedure main()
 
     return
 
-{% MH_LoadFile( '..\pluggins\templates\addHarbourPRGFileAsCodeText.prg') %}
+{% MH_LoadFile('..\pluggins\templates\addHarbourPRGFileAsCodeText.prg') %}

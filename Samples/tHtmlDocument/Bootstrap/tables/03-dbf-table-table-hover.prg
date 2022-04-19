@@ -17,6 +17,7 @@ procedure main()
     local oDiv as object
     local oNode as object
     local oCell as object
+    local oLang as object
     local oTable as object
     local oThead as object
     local oTBody as object
@@ -35,12 +36,15 @@ procedure main()
     cHTML:=BootstrapStarterTemplate()
     oHTMLDoc:=THtmlDocument():New(cHTML)
 
+    oLang:=oHTMLDoc:root:html
+    oLang:attr:={"lang"=>"en"}
+
     cTitle:="mod_harbour :: Bootstrap :: Tables :: table-hover"
 
     /* Operator "+" creates a new node */
     oNode:=oHTMLDoc:head+"meta"
     oNode:name:="Generator"
-    oNode:content:="THtmlDocument"
+    oNode:content:="Harbour/THtmlDocument"
 
     oNode:=oHTMLDoc:head+"title"
     oNode:text:=cTitle
@@ -147,5 +151,5 @@ procedure main()
 
     return
 
-{% MH_LoadFile( '..\pluggins\templates\BootstrapStarterTemplate.prg') %}
-{% MH_LoadFile( '..\pluggins\templates\addHarbourPRGFileAsCodeText.prg') %}
+{% MH_LoadFile('..\pluggins\templates\BootstrapStarterTemplate.prg') %}
+{% MH_LoadFile('..\pluggins\templates\addHarbourPRGFileAsCodeText.prg') %}
