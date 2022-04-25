@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title></title>
@@ -25,67 +26,74 @@
         <!--  -->
     </head>
     <body>
-        <div class="container">
-            <div class="page-header">
-                <h3>mod_harbour :: JSON to Bootstrap table</h3>
-            </div>
-            <div>
-                <h4>Bootstrap Table with JSON Data - Ajax request</h4>
+        <main>
+            <div class="container">
+                <div class="page-header">
+                    <h3>mod_harbour :: JSON to Bootstrap table</h3>
+                </div>
                 <div>
-                    <div class="createTableJSON"></div>
-                    <figure class="highlight">
-                        <pre>
+                    <h4>Bootstrap Table with JSON Data - Ajax request</h4>
+                    <div>
+                        <div class="createTableJSON"></div>
+                        <figure class="highlight">
                             <h4>Code Used </h4>
-<code>&lt;script src="./json-to-Bootstrap-Table/example/jsonToTable.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-    var dtbl = new createTable({
-    url:'./json-to-Bootstrap-Table/example/JSONToBootstrapTable.prg?file=dbf',
-    wrapper:".createTableJSON"
-    }).create();
-&lt;/script&gt;
-</code>
+                            <pre>
+
+    <code>&lt;script src="./json-to-Bootstrap-Table/example/jsonToTable.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        var dtbl = new createTable({
+        url:'./json-to-Bootstrap-Table/example/JSONToBootstrapTable.prg?file=dbf',
+        wrapper:".createTableJSON"
+        }).create();
+    &lt;/script&gt;
+    </code>
+                            </pre>
                             <h4> To Pass a Data instead of URL </h4>
-<code>&lt;script src="./json-to-Bootstrap-Table/example/jsonToTable.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-    var ctbl = new createTable({
-    data:[{"d":"a", "e":"b"},{"e":"a", "d":"b"}],
-    wrapper:".createTable"
-    }).create();
-&lt;/script&gt;
-</code>
+                            <pre>
+    <code>&lt;script src="./json-to-Bootstrap-Table/example/jsonToTable.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        var ctbl = new createTable({
+        data:[{"d":"a", "e":"b"},{"e":"a", "d":"b"}],
+        wrapper:".createTable"
+        }).create();
+    &lt;/script&gt;
+    </code>
+                            </pre>
                             <h4> JSON Data </h4>
-<code>
-[{"id": 1,"gender": "Male","first_name": "Randy","last_name": "Russell","email": "rrussell0@ebay.com","ip_address": "65.239.17.202"},
-{"id": 2,"gender": "Male","first_name": "Mark","last_name": "Ryan","email": "mryan1@cbsnews.com","ip_address": "69.21.244.122"}.... & more]
-</code>
-                        </pre>
-                    </figure>
+                            <pre>
+    <code>
+    [{"id": 1,"gender": "Male","first_name": "Randy","last_name": "Russell","email": "rrussell0@ebay.com","ip_address": "65.239.17.202"},
+    {"id": 2,"gender": "Male","first_name": "Mark","last_name": "Ryan","email": "mryan1@cbsnews.com","ip_address": "69.21.244.122"}.... & more]
+    </code>
+                            </pre>
+                        </figure>
+                    </div>
                 </div>
             </div>
-        </div>
-        <script src="./json-to-Bootstrap-Table/example/jsonToTable.min.js"></script>
-        <script>
-        var dtbl = new createTable({
-            url:'./json-to-Bootstrap-Table/example/JSONToBootstrapTable.prg?file=dbf',
-            wrapper:".createTableJSON"
-        }).create();
-        </script>
-    </body>
-    <footer>
-        <div class="fixed-action-btn right" id="ID_fixed-action-btn-arrow_back">
-            <a class="btn-floating btn-large tooltipped" data-position="top" data-tooltip="Back" onclick="window.open('../tables/','_top');">
-                <i id="ID_fixed-action-btn-i-arrow_back_icon" class="material-icons" style="user-select: none;">arrow_back</i>
-            </a>
+            <script src="./json-to-Bootstrap-Table/example/jsonToTable.min.js"></script>
             <script>
-                <!-- https://materializecss.com/floating-action-button.html -->
-                $(document).ready(function(){
-                    $('.fixed-action-btn').floatingActionButton();
-                });
-                <!-- https://materializecss.com/tooltips.html -->
-                $(document).ready(function(){
-                    $('.tooltipped').tooltip();
-                });
+            var dtbl = new createTable({
+                url:'./json-to-Bootstrap-Table/example/JSONToBootstrapTable.prg?file=dbf',
+                wrapper:".createTableJSON"
+            }).create();
             </script>
-        </div>
-    </footer>
+        </main>
+        <footer>
+            <div class="fixed-action-btn right" id="ID_fixed-action-btn-arrow_back">
+                <a class="btn-floating btn-large tooltipped" data-position="top" data-tooltip="Back" onclick="window.open('../tables/','_top');">
+                    <i id="ID_fixed-action-btn-i-arrow_back_icon" class="material-icons" style="user-select: none;">arrow_back</i>
+                </a>
+                <script>
+                    <!-- https://materializecss.com/floating-action-button.html -->
+                    $(document).ready(function(){
+                        $('.fixed-action-btn').floatingActionButton();
+                    });
+                    <!-- https://materializecss.com/tooltips.html -->
+                    $(document).ready(function(){
+                        $('.tooltipped').tooltip();
+                    });
+                </script>
+            </div>
+        </footer>
+    </body>
 </html>

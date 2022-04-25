@@ -1,3 +1,5 @@
+{% MH_LoadHRB( '..\pluggins\contrib\_thtml.hrb' ) %}
+
 procedure addHarbourPRGFileAsCodeText(oParent,cPRGFile)
 
     local cPRGText
@@ -7,13 +9,13 @@ procedure addHarbourPRGFileAsCodeText(oParent,cPRGFile)
     local oFigureHighlightPreH4 as object
     local oFigureHighlightPreCode as object
 
-    oFigureHighlight:=oParent:AddNode(THtmlNode():New(oParent,"figure"))
+    oFigureHighlight:=oParent:AddNode(_THtmlNode():New(oParent,"figure"))
     oFigureHighlight:attr:='class="highlight"'
 
-        oFigureHighlightPre:=oFigureHighlight+"pre"
-        oFigureHighlightPreH4:=oFigureHighlightPre+"h4"
+        oFigureHighlightPreH4:=oFigureHighlight+"h4"
         oFigureHighlightPreH4:text:="Harbour Code Used"
 
+        oFigureHighlightPre:=oFigureHighlight+"pre"
         oFigureHighlightPreCode:=oFigureHighlightPre+"code"
 
         cPRGText:=hb_MemoRead(cPRGFile)
@@ -22,6 +24,6 @@ procedure addHarbourPRGFileAsCodeText(oParent,cPRGFile)
 
         oFigureHighlightPreCode:text:=cPRGText
 
-    oFigureHighlight:=oParent:AddNode(THtmlNode():New(oParent,"/figure"))
+    oFigureHighlight:=oParent:AddNode(_THtmlNode():New(oParent,"/figure"))
 
 return
