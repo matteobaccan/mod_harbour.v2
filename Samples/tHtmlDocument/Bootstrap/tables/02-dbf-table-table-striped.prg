@@ -6,7 +6,7 @@
    #include "/usr/include/harbour/dbstruct.ch"
 #endif
 
-{% MH_LoadHRB( '..\pluggins\contrib\_THtml.hrb' ) %}
+{% MH_LoadHRB( '..\pluggins\contrib\thtml.hrb' ) %}
 
 procedure main()
 
@@ -38,7 +38,7 @@ procedure main()
     cAlias:=alias()
 
     cHTML:=BootstrapStarterTemplate()
-    oHTMLDoc:=_THtmlDocument():New(cHTML)
+    oHTMLDoc:=THtmlDocument():New(cHTML)
     
     oLang:=oHTMLDoc:root:html
     oLang:attr:={"lang"=>"en"}
@@ -48,7 +48,7 @@ procedure main()
     /* Operator "+" creates a new node */
     oNode:=oHTMLDoc:head+"meta"
     oNode:name:="Generator"
-    oNode:content:="Harbour/_THtmlDocument"
+    oNode:content:="Harbour/THtmlDocument"
 
     oNode:=oHTMLDoc:head+"title"
     oNode:text:=cTitle
@@ -99,18 +99,18 @@ procedure main()
     oNode:=oTable:caption
     oNode:text:=hb_NTos((cAlias)->(RecCount()))+" records from database "+cAlias
 
-    oThead:=oTable:AddNode(_THtmlNode():New(oTable,"thead"))
+    oThead:=oTable:AddNode(THtmlNode():New(oTable,"thead"))
 
-        oRow:=oThead:AddNode(_THtmlNode():New(oThead,"tr"))
+        oRow:=oThead:AddNode(THtmlNode():New(oThead,"tr"))
 
-        oCell:=oRow:AddNode(_THtmlNode():New(oRow,"th"))
+        oCell:=oRow:AddNode(THtmlNode():New(oRow,"th"))
         oCell:scope:="row"
         oCell:text:="#"
         oCell:=oCell-"th"
 
         nFields:=(cAlias)->(fCount())
         for nField:=1 to nFields
-            oCell:=oRow:AddNode(_THtmlNode():New(oRow,"th"))
+            oCell:=oRow:AddNode(THtmlNode():New(oRow,"th"))
             oCell:scope:="col"
             oCell:text:=(cAlias)->(FieldName(nField))
             oCell:=oCell-"th"
@@ -118,20 +118,20 @@ procedure main()
 
         oRow:=oRow-"tr"
 
-    oThead:=oTable:AddNode(_THtmlNode():New(oTable,"/thead"))
+    oThead:=oTable:AddNode(THtmlNode():New(oTable,"/thead"))
 
-    oTBody:=oTable:AddNode(_THtmlNode():New(oTable,"tbody"))
+    oTBody:=oTable:AddNode(THtmlNode():New(oTable,"tbody"))
 
         aDbStruct:=(cAlias)->(dbStruct())
         (cAlias)->(dbGoTop())
         while ((cAlias)->(!eof()))
-            oRow:=oTBody:AddNode(_THtmlNode():New(oTBody,"tr"))
-            oCell:=oRow:AddNode(_THtmlNode():New(oRow,"th"))
+            oRow:=oTBody:AddNode(THtmlNode():New(oTBody,"tr"))
+            oCell:=oRow:AddNode(THtmlNode():New(oRow,"th"))
             oCell:scope:="row"
             oCell:text:=(cAlias)->(RecNo())
             oCell:=oCell-"th"
             for nField:=1 to nFields
-                oCell:=oRow:AddNode(_THtmlNode():New(oRow,"td"))
+                oCell:=oRow:AddNode(THtmlNode():New(oRow,"td"))
                 xValue:=(cAlias)->(FieldGet(nField))
                 if (aDbStruct[nField][DBS_TYPE]=="C")
                     xValue:=allTrim(xValue)
@@ -143,7 +143,7 @@ procedure main()
              (cAlias)->(dbSkip())
         end while
 
-    oTBody:=oTable:AddNode(_THtmlNode():New(oTable,"/tbody"))
+    oTBody:=oTable:AddNode(THtmlNode():New(oTable,"/tbody"))
 
     (cAlias)->(dbCloseArea())
 

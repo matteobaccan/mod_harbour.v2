@@ -1,6 +1,6 @@
 //https://github.com/pbse/JSON-to-Bootstrap-Table
 
-{% MH_LoadHRB( '..\pluggins\contrib\_THtml.hrb' ) %}
+{% MH_LoadHRB( '..\pluggins\contrib\thtml.hrb' ) %}
 
 procedure main()
 
@@ -28,7 +28,7 @@ procedure main()
     local oFigureHighlightPreCode as object
 
     cHTML:=hb_MemoRead(hb_GetEnv('PRGPATH')+"/json-to-Bootstrap-Table/example/index-json-dbf.html")
-    oHTMLDoc:=_THtmlDocument():New(cHTML)
+    oHTMLDoc:=THtmlDocument():New(cHTML)
 
     oLang:=oHTMLDoc:root:html
     oLang:attr:={"lang"=>"en"}
@@ -53,7 +53,7 @@ procedure main()
     oDivCreateTableJSON:=oDivPageHeaderRowDiv+"div"
     oDivCreateTableJSON:attr:='class="createTableJSON"'
 
-    oFigureHighlight:=oDivPageHeaderRowDiv:AddNode(_THtmlNode():New(oDivPageHeaderRowDiv,"figure"))
+    oFigureHighlight:=oDivPageHeaderRowDiv:AddNode(THtmlNode():New(oDivPageHeaderRowDiv,"figure"))
         oFigureHighlight:attr:='class="highlight"'
 
         oFigureHighlightPreH4:=oFigureHighlight+"h4"
@@ -100,7 +100,7 @@ procedure main()
 ]
         ENDTEXT
 
-    oFigureHighlight:=oDivPageHeaderRowDiv:AddNode(_THtmlNode():New(oDivPageHeaderRowDiv,"/figure"))
+    oFigureHighlight:=oDivPageHeaderRowDiv:AddNode(THtmlNode():New(oDivPageHeaderRowDiv,"/figure"))
 
     oScript:=oHTMLDoc:body:Main+"script"
     oScript:src:="./json-to-Bootstrap-Table/example/jsonToTable.min.js"
