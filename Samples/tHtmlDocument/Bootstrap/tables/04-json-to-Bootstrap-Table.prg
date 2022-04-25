@@ -1,4 +1,8 @@
+//Nu Html Checker :: https://validator.w3.org/nu/
 //https://github.com/pbse/JSON-to-Bootstrap-Table
+
+{% MH_LoadHRB( '..\pluggins\contrib\_THtml.hrb' ) %}
+
 procedure main()
 
     local cHTML as character
@@ -8,7 +12,7 @@ procedure main()
     local oHeadTitle as object
 
     cHTML:=hb_MemoRead(hb_GetEnv('PRGPATH')+"/json-to-Bootstrap-Table/example/index-json.html")
-    oHTMLDoc:=THtmlDocument():New(cHTML)
+    oHTMLDoc:=_THtmlDocument():New(cHTML)
 
     oLang:=oHTMLDoc:root:html
     oLang:attr:={"lang"=>"en"}
@@ -16,9 +20,9 @@ procedure main()
     oHeadTitle:=oHTMLDoc:Head:title
     oHeadTitle:text:="MOD_HARBOUR :: JSON/JSON to Bootstrap table"
 
-    addHarbourPRGFileAsCodeText(oHTMLDoc:body,hb_getenv('PRGPATH')+'/04-json-to-Bootstrap-Table.prg')
+    addHarbourPRGFileAsCodeText(oHTMLDoc:body:Main,hb_getenv('PRGPATH')+'/04-json-to-Bootstrap-Table.prg')
 
-    cHTML:=oHTMLDoc:toString()
+    cHTML:=oHTMLDoc:toString(-9,4)
 
     ??cHTML
 

@@ -30,24 +30,26 @@ static function BootstrapStarterTemplate()
         <!--  -->
     </head>
     <body>
+        <main>
+        </main>
+        <footer>
+            <div class="fixed-action-btn right" id="ID_fixed-action-btn-arrow_back">
+                <a class="btn-floating btn-large tooltipped" data-position="top" data-tooltip="Back" onclick="window.open('../tables/','_top');">
+                    <i id="ID_fixed-action-btn-i-arrow_back_icon" class="material-icons" style="user-select: none;">arrow_back</i>
+                </a>
+                <script>
+                    <!-- https://materializecss.com/floating-action-button.html -->
+                    $(document).ready(function(){
+                        $('.fixed-action-btn').floatingActionButton();
+                    });
+                    <!-- https://materializecss.com/tooltips.html -->
+                    $(document).ready(function(){
+                        $('.tooltipped').tooltip();
+                    });
+                </script>
+            </div>
+        </footer>
     </body>
-    <footer>
-        <div class="fixed-action-btn right" id="ID_fixed-action-btn-arrow_back">
-            <a class="btn-floating btn-large tooltipped" data-position="top" data-tooltip="Back" onclick="window.open('../tables/','_top');">
-                <i id="ID_fixed-action-btn-i-arrow_back_icon" class="material-icons" style="user-select: none;">arrow_back</i>
-            </a>
-            <script>
-                <!-- https://materializecss.com/floating-action-button.html -->
-                $(document).ready(function(){
-                    $('.fixed-action-btn').floatingActionButton();
-                });
-                <!-- https://materializecss.com/tooltips.html -->
-                $(document).ready(function(){
-                    $('.tooltipped').tooltip();
-                });
-            </script>
-        </div>
-    </footer>
 </html>
    ENDTEXT
 

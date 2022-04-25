@@ -1,8 +1,12 @@
+//Nu Html Checker :: https://validator.w3.org/nu/
+
 #ifdef __PLATFORM__WINDOWS
    #include "c:\harbour\include\dbstruct.ch"
 #else
    #include "/usr/include/harbour/dbstruct.ch"
 #endif
+
+{% MH_LoadHRB( '..\pluggins\contrib\_thtml.hrb' ) %}
 
 procedure main()
 
@@ -34,7 +38,7 @@ procedure main()
     cAlias:=alias()
 
     cHTML:=BootstrapStarterTemplate()
-    oHTMLDoc:=THtmlDocument():New(cHTML)
+    oHTMLDoc:=_THtmlDocument():New(cHTML)
 
     oLang:=oHTMLDoc:root:html
     oLang:attr:={"lang"=>"en"}
@@ -44,13 +48,13 @@ procedure main()
     /* Operator "+" creates a new node */
     oNode:=oHTMLDoc:head+"meta"
     oNode:name:="Generator"
-    oNode:content:="Harbour/THtmlDocument"
+    oNode:content:="Harbour/_THtmlDocument"
 
     oNode:=oHTMLDoc:head+"title"
     oNode:text:=cTitle
 
     /* Operator ":" returns first "div" from body (creates if not existent) */
-    oDiv:=oHTMLDoc:body:div
+    oDiv:=oHTMLDoc:body:Main:div
     oDiv:attr:='class="container"'
 
     /* Operator ":" returns first "h3" from div (creates if not existent) */
@@ -64,27 +68,27 @@ procedure main()
     /* Operator "+" creates a new <p> node */
     oNode:=oDiv+"p"
 
-    /* Operator "+" creates a new <font> node with attribute */
-    oNode+='font size="5"'
+    /* Operator "+" creates a new <h4> node with attribute */
+    oNode+='h4'
     oNode:text:="This is a "
 
     /* Operator "+" creates a new <b> node */
     oNode+="b"
 
-    /* Operator "+" creates a new <font> node with attribute */
-    oNode+='font color="blue"'
+    /* Operator "+" creates a new <strong> node with attribute */
+    oNode+='strong'
     oNode:text:="sample "
 
-    /* Operator "-" closes 2nd <font>,result is <b> node */
-    oNode-="font"
+    /* Operator "-" closes 2nd <strong>,result is <b> node */
+    oNode-="strong"
 
-    /* Operator "-" closes <b> node,result is 1st <font> node */
+    /* Operator "-" closes <b> node,result is 1st <b> node */
     oNode-="b"
 
     oNode:text:="Bootstrap Table :: table!"
 
-    /* Operator "-" closes 1st <font> node,result is <p> node */
-    oNode-="font"
+    /* Operator "-" closes 1st <strong> node,result is <p> node */
+    oNode-="h4"
 
     oNode+="hr"
 
@@ -92,18 +96,21 @@ procedure main()
     oTable:=oDiv:table
     oTable:attr:='class="table"'
 
-    oThead:=oTable:AddNode(THtmlNode():New(oTable,"thead"))
+    oNode:=oTable:caption
+    oNode:text:=hb_NTos((cAlias)->(RecCount()))+" records from database "+cAlias
 
-        oRow:=oThead:AddNode(THtmlNode():New(oThead,"tr"))
+    oThead:=oTable:AddNode(_THtmlNode():New(oTable,"thead"))
 
-        oCell:=oRow:AddNode(THtmlNode():New(oRow,"th"))
+        oRow:=oThead:AddNode(_THtmlNode():New(oThead,"tr"))
+
+        oCell:=oRow:AddNode(_THtmlNode():New(oRow,"th"))
         oCell:scope:="row"
         oCell:text:="#"
         oCell:=oCell-"th"
 
         nFields:=(cAlias)->(fCount())
         for nField:=1 to nFields
-            oCell:=oRow:AddNode(THtmlNode():New(oRow,"th"))
+            oCell:=oRow:AddNode(_THtmlNode():New(oRow,"th"))
             oCell:scope:="col"
             oCell:text:=(cAlias)->(FieldName(nField))
             oCell:=oCell-"th"
@@ -111,20 +118,20 @@ procedure main()
 
         oRow:=oRow-"tr"
 
-    oThead:=oTable:AddNode(THtmlNode():New(oTable,"/thead"))
+    oThead:=oTable:AddNode(_THtmlNode():New(oTable,"/thead"))
 
-    oTBody:=oTable:AddNode(THtmlNode():New(oTable,"tbody"))
+    oTBody:=oTable:AddNode(_THtmlNode():New(oTable,"tbody"))
 
         aDbStruct:=(cAlias)->(dbStruct())
         (cAlias)->(dbGoTop())
         while ((cAlias)->(!eof()))
-            oRow:=oTBody:AddNode(THtmlNode():New(oTBody,"tr"))
-            oCell:=oRow:AddNode(THtmlNode():New(oRow,"th"))
+            oRow:=oTBody:AddNode(_THtmlNode():New(oTBody,"tr"))
+            oCell:=oRow:AddNode(_THtmlNode():New(oRow,"th"))
             oCell:scope:="row"
             oCell:text:=(cAlias)->(RecNo())
             oCell:=oCell-"th"
             for nField:=1 to nFields
-                oCell:=oRow:AddNode(THtmlNode():New(oRow,"td"))
+                oCell:=oRow:AddNode(_THtmlNode():New(oRow,"td"))
                 xValue:=(cAlias)->(FieldGet(nField))
                 if (aDbStruct[nField][DBS_TYPE]=="C")
                     xValue:=allTrim(xValue)
@@ -136,14 +143,11 @@ procedure main()
             (cAlias)->(dbSkip())
         end while
 
-    oTBody:=oTable:AddNode(THtmlNode():New(oTable,"/tbody"))
-
-    oNode:=oTable:caption
-    oNode:text:=hb_NTos((cAlias)->(RecCount()))+" records from database "+cAlias
+    oTBody:=oTable:AddNode(_THtmlNode():New(oTable,"/tbody"))
 
     (cAlias)->(dbCloseArea())
 
-    addHarbourPRGFileAsCodeText(oHTMLDoc:body:div,hb_getenv('PRGPATH')+'/01-dbf-table-table.prg')
+    addHarbourPRGFileAsCodeText(oHTMLDoc:body:Main:div,hb_getenv('PRGPATH')+'/01-dbf-table-table.prg')
 
     cHTML:=oHTMLDoc:toString(-9,4)
 
