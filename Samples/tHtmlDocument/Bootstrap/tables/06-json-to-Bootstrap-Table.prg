@@ -1,5 +1,9 @@
 //https://github.com/pbse/JSON-to-Bootstrap-Table
 
+/*
+    replace default tHTMLDocument class with new tHTMLDocument class. 
+    Source code: https://github.com/naldodj/naldodj-hb/tree/main/contrib/hbtip
+*/
 {% MH_LoadHRB( '..\pluggins\contrib\thtml.hrb' ) %}
 
 procedure main()
