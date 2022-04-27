@@ -4,8 +4,8 @@
 ** MIT license
 */
 
-#define MODNAME			'mod_harbour.V2.1'
-#define MODVERSION		'2.1.007'
+#define MODNAME 'mod_harbour.V2.1'
+#define MODVERSION '2.1.007'
 
 #ifdef __PLATFORM__WINDOWS
    #define __HBEXTERN__HBWIN__REQUEST
@@ -30,6 +30,23 @@
 #include "../hbnetio/hbnetio.hbx"
 #define __HBEXTERN__HBMISC__REQUEST
 #include "../hbmisc/hbmisc.hbx" 
+#ifdef HB_WITH_ADS
+   #define __HBEXTERN__RDDADS__REQUEST
+   #include "../rddads/rddads.hbx"
+#endif
+#ifdef HB_WITH_TDOLPHIN
+   #define __HBEXTERN__TDOLPHIN__REQUEST
+   #include "../tdolphin/tdolphin.hbx"
+#endif  
+#ifdef HB_WITH_LETODB
+   #define __HBEXTERN__RDDLETO__REQUEST
+   #include "../letodb/rddleto.hbx"
+#endif   
+#ifdef HB_WITH_LETODBF
+   #define __HBEXTERN__LETODB__REQUEST
+   #include "../letodbf/letodb.hbx"
+#endif   
+
 
 #include "mh_apache.ch"
 
