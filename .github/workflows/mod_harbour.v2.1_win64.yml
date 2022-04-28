@@ -1,4 +1,4 @@
-name: mod_harbour.v2.1 for Windows 64
+name: mod_harbour.v2.1 for Windows 64 
 
 on:
   push:
@@ -48,16 +48,21 @@ jobs:
           ..\..\bin\win\msvc64\hbmk2 mod_harbour.v2.1.hbp -Lc:\Apache24\lib -Ic:\Apache24\include -ic:\Apache24\include
 
       - name: Prepare artifact
-        shell: cmd
+        id: artifact
         run: |
           mkdir artifact
           mkdir artifact\Samples
           xcopy harbour\contrib\mod_harbour.v2\Samples\*.* .\artifact\Samples /E /H /C /I
           xcopy harbour\contrib\mod_harbour.v2\output\win64\mod_harbour.v2.so .\artifact /E /H /C /I
           xcopy harbour\contrib\mod_harbour.v2\output\win64\libmhapache.dll .\artifact /E /H /C /I
+          $MODVERSION = findstr /C:"#define MODVERSION" harbour\contrib\mod_harbour.v2\source\main.prg
+          $MODVERSION = $MODVERSION.Replace("#define MODVERSION","")
+          $MODVERSION = $MODVERSION.Replace("'","")
+          $MODVERSION = $MODVERSION.Trim()
+          echo "::set-output name=modversion::$MODVERSION"          
 
       - name: Upload mod_harbour.v2.so/libmhapache.dll/Samples to artifact
         uses: actions/upload-artifact@v2
         with:
-          name: mod_harbour.v2.1_win64
+          name: mod_harbour.V${{ steps.artifact.outputs.modversion }}_win64
           path: artifact
