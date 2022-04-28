@@ -4,8 +4,9 @@
 /*
     replace default tHTMLDocument class with new tHTMLDocument class. 
     Source code: https://github.com/naldodj/naldodj-hb/tree/main/contrib/hbtip
+    SetEnvIf Request_URI "/samples/tHtmlDocument/Bootstrap/tables/" MH_INITPROCESS=../pluggins/contrib/thtml.hrb,../pluggins/templates/addHarbourPRGFileAsCodeText.prg,../pluggins/templates/BootstrapStarterTemplate.prg
 */    
-{% MH_LoadHRB( '..\pluggins\contrib\thtml.hrb' ) %}
+{% MH_LoadHRB( '../pluggins/contrib/thtml.hrb' ) %}
 
 procedure main()
 
@@ -173,4 +174,4 @@ var dtbl=new createTable(
 
     return
 
-{% MH_LoadFile('..\pluggins\templates\addHarbourPRGFileAsCodeText.prg') %}
+{% MH_LoadFile('../pluggins/templates/addHarbourPRGFileAsCodeText.prg') %}
