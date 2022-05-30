@@ -20,7 +20,7 @@ THREAD STATIC ts_aFiles
 THREAD STATIC ts_bError
 THREAD STATIC ts_hConfig
 THREAD STATIC ts_oSession
-STATIC hPP
+THREAD STATIC hPP
 
 // SetEnv Var config. ----------------------------------------
 // MH_CACHE          - Use PcodeCached
@@ -44,10 +44,11 @@ FUNCTION mh_PPRules()
 
    LOCAL cOs := OS()
    LOCAL n, aPair, cExt
+   
 
-   IF hPP == nil
+    IF hPP == nil
 
-      hPP = __pp_Init()
+      hPP := __pp_Init()
 
       DO CASE
       CASE "Windows" $ cOs  ; __pp_Path( hPP, "c:\harbour\include" )
@@ -58,6 +59,7 @@ FUNCTION mh_PPRules()
          __pp_Path( hPP, hb_GetEnv( "HB_INCLUDE" ) )
       ENDIF
 
+      __pp_AddRule( hPP, "#define __MODHARBOUR__" )
       __pp_AddRule( hPP, "#xcommand ? [<explist,...>] => ap_Echo( '<br>' [,<explist>] )" )
       __pp_AddRule( hPP, "#xcommand ?? [<explist,...>] => ap_Echo( [<explist>] )" )
       __pp_AddRule( hPP, "#define CRLF hb_OsNewLine()" )
@@ -75,8 +77,14 @@ FUNCTION mh_PPRules()
       __pp_AddRule( hPP, "#xcommand FINALLY => ALWAYS" )
       __pp_AddRule( hPP, "#xcommand DEFAULT <v1> TO <x1> [, <vn> TO <xn> ] => ;" + ;
          "IF <v1> == NIL ; <v1> := <x1> ; END [; IF <vn> == NIL ; <vn> := <xn> ; END ]" )
+		 
+	ELSE 
+	
+		IF ! Empty( hb_GetEnv( "HB_INCLUDE" ) )
+			 __pp_Path( hPP, hb_GetEnv( "HB_INCLUDE" ) )
+		ENDIF	
 
-   ENDIF
+    ENDIF
 
 RETURN hPP
 
@@ -650,6 +658,7 @@ PHB_ITEM * phHash;
 PHB_ITEM * phHashConfig;
 void * pmh_StartMutex;
 void * pmh_EndMutex;
+int nUsedVm;
 
 //----------------------------------------------------------------//
 
@@ -680,11 +689,11 @@ HB_EXPORT_ATTR void mh_init( void * _phHash, void * _phHashConfig, void * _pmh_S
 
 //----------------------------------------------------------------//
 
-HB_EXPORT_ATTR void mh_apache( request_rec * _pRequestRec )
+HB_EXPORT_ATTR void mh_apache( request_rec * _pRequestRec, int _nUsedVm )
 {
    szBody = NULL;
    pRequestRec = _pRequestRec;
-
+   nUsedVm = _nUsedVm;      
    hb_vmThreadInit( NULL );
    HB_FUNC_EXEC(MH_RUNNER);
    hb_vmThreadQuit();
@@ -798,6 +807,13 @@ HB_FUNC(MH_EXITSTATUS)
    {
       rec->status = hb_parni(1);
    };
+}
+
+//----------------------------------------------------------------//
+
+HB_FUNC( MH_USEDVM )
+{
+   hb_retni( nUsedVm );
 }
 
 //----------------------------------------------------------------//
