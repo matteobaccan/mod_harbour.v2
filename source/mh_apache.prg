@@ -44,7 +44,7 @@ FUNCTION mh_PPRules()
 
    LOCAL cOs := OS()
    LOCAL n, aPair, cExt
-   
+ 
 
     IF hPP == nil
 
@@ -55,10 +55,10 @@ FUNCTION mh_PPRules()
       CASE "Linux" $ cOs   ; __pp_Path( hPP, "~/harbour/include" )
       ENDCASE
 
-      IF ! Empty( hb_GetEnv( "HB_INCLUDE" ) )
-         __pp_Path( hPP, hb_GetEnv( "HB_INCLUDE" ) )
-      ENDIF
-
+      __pp_AddRule( hPP, "#xcommand static [<explist,...>]  => THREAD STATIC [<explist>]" )
+      __pp_AddRule( hPP, "#xcommand THREAD STATIC function <FuncName>([<params,...>]) => STAT FUNCTION <FuncName>( [<params>] )" )
+      __pp_AddRule( hPP, "#xcommand THREAD STATIC procedure <ProcName>([<params,...>]) => STAT PROCEDURE <ProcName>( [<params>] )" )
+	  
       __pp_AddRule( hPP, "#define __MODHARBOUR__" )
       __pp_AddRule( hPP, "#xcommand ? [<explist,...>] => ap_Echo( '<br>' [,<explist>] )" )
       __pp_AddRule( hPP, "#xcommand ?? [<explist,...>] => ap_Echo( [<explist>] )" )
@@ -78,13 +78,13 @@ FUNCTION mh_PPRules()
       __pp_AddRule( hPP, "#xcommand DEFAULT <v1> TO <x1> [, <vn> TO <xn> ] => ;" + ;
          "IF <v1> == NIL ; <v1> := <x1> ; END [; IF <vn> == NIL ; <vn> := <xn> ; END ]" )
 		 
-	ELSE 
 	
-		IF ! Empty( hb_GetEnv( "HB_INCLUDE" ) )
-			 __pp_Path( hPP, hb_GetEnv( "HB_INCLUDE" ) )
-		ENDIF	
-
     ENDIF
+	
+	IF ! Empty( hb_GetEnv( "HB_INCLUDE" ) )
+	  __pp_Path( hPP, hb_GetEnv( "HB_INCLUDE" ) )
+	ENDIF			 
+
 
 RETURN hPP
 
@@ -674,17 +674,31 @@ HB_EXPORT_ATTR void mh_init( void * _phHash, void * _phHashConfig, void * _pmh_S
 {
    if( ! hb_vmIsActive() ) {
       hb_vmInit( HB_TRUE );
-      if ( _phHash == NULL ) {
+      if ( _phHash != NULL ) {
           phHash = _phHash;
           phHashConfig = _phHashConfig;
-          phHash = hb_hashNew(NULL);
-          phHashConfig = hb_hashNew(NULL);
       };
       hPcodeCached   = hb_hashNew(NULL);
       hHashModules   = hb_hashNew(NULL);
       pmh_StartMutex = _pmh_StartMutex;
       pmh_EndMutex = _pmh_EndMutex;
    };
+}
+
+//----------------------------------------------------------------//
+
+HB_EXPORT_ATTR PHB_ITEM mh_HashInit( void * _phHash )
+{
+   phHash = hb_hashNew(NULL);
+   return phHash;
+}
+
+//----------------------------------------------------------------//
+
+HB_EXPORT_ATTR PHB_ITEM mh_HashConfigInit( void * _phHashConfig )
+{
+   phHashConfig = hb_hashNew(NULL);
+   return phHashConfig;
 }
 
 //----------------------------------------------------------------//
