@@ -76,7 +76,7 @@ procedure main()
         oNode:text:=aOptions[nOption][3]
     next nOption
 
-    addHarbourPRGFileAsCodeText(oHTMLDoc:body:Main:div,hb_getenv('PRGPATH')+'/01-dbf-table-table.prg')
+    addHarbourPRGFileAsCodeText(oHTMLDoc:body:Main:div,hb_getenv('PRGPATH')+'/index.prg')
 
     cHTML:=oHTMLDoc:toString(-9,4)
 
