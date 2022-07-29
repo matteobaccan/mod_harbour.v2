@@ -15,9 +15,11 @@ procedure main()
     local oLang as object
     local oHTMLDoc as object
     local oHeadTitle as object
+    
+    local pHrbLoad as pointer
 
     cHTML:=hb_MemoRead(hb_GetEnv('PRGPATH')+"/json-to-Bootstrap-Table/example/index-json.html")
-    oHTMLDoc:=THtmlDocument():New(cHTML)
+    oHTMLDoc:=tHTMLDocumentNew(cHTML,@pHrbLoad)
 
     oLang:=oHTMLDoc:root:html
     oLang:attr:={"lang"=>"en"}
@@ -33,4 +35,5 @@ procedure main()
 
     return
 
+{% MH_LoadFile('../pluggins/templates/tHTMLDocumentNew.prg') %}
 {% MH_LoadFile('../pluggins/templates/addHarbourPRGFileAsCodeText.prg') %}

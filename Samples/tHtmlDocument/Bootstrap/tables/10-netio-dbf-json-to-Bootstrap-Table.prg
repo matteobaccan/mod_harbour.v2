@@ -42,7 +42,7 @@ procedure main()
     oLang:attr:={"lang"=>"en"}
 
     oHeadTitle:=oHTMLDoc:Head:title
-    oHeadTitle:text:="MOD_HARBOUR :: DBF/JSON to Bootstrap table"
+    oHeadTitle:text:="MOD_HARBOUR :: NETIO:DBF/JSON to Bootstrap table"
 
     oDivContainer:=oHTMLDoc:body:Main:div
     oDivContainer:attr:='class="container"'
@@ -50,7 +50,7 @@ procedure main()
     oDivPageHeader:=oDivContainer+"div"
     oDivPageHeader:attr:='class="page-header"'
     oDivPageHeaderH3:=oDivPageHeader:h3
-    oDivPageHeaderH3:text:="mod_harbour :: DBF/JSON to Bootstrap table"
+    oDivPageHeaderH3:text:="mod_harbour :: NETIO:DBF/JSON to Bootstrap table"
 
     oDivPageHeaderRow:=oDivContainer+"div"
 
@@ -74,7 +74,7 @@ procedure main()
 &lt;script src="./json-to-Bootstrap-Table/example/jsonToTable.js"&gt;&lt;/script&gt;
 &lt;script&gt;
     var dtbl = new createTable({
-    url:'./json-to-Bootstrap-Table/example/JSONToBootstrapTable.prg?file=dbf',
+    url:'./json-to-Bootstrap-Table/example/JSONToBootstrapTable.prg?file=netio',
     wrapper:".createTableJSON"
     }).create();
 &lt;/script&gt;
@@ -116,13 +116,13 @@ procedure main()
     TEXT INTO oScript:text
 var dtbl=new createTable(
     {
-        url:'./json-to-Bootstrap-Table/example/JSONToBootstrapTable.prg?file=dbf',
+        url:'./json-to-Bootstrap-Table/example/JSONToBootstrapTable.prg?file=netio',
         wrapper:".createTableJSON"
     }
 ).create();
     ENDTEXT
 
-    addHarbourPRGFileAsCodeText(oHTMLDoc:body:Main:div,hb_getenv('PRGPATH')+'/07-dbf-json-to-Bootstrap-Table.prg')
+    addHarbourPRGFileAsCodeText(oHTMLDoc:body:Main:div,hb_getenv('PRGPATH')+'/10-netio-dbf-json-to-Bootstrap-Table.prg')
 
     cHTML:=oHTMLDoc:toString(-9,4)
 

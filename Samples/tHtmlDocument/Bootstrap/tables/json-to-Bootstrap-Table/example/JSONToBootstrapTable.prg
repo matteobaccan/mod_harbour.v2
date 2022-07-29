@@ -9,6 +9,14 @@
 #define TIMEOUT_Send    (15*1000)
 #define TIMEOUT_Receive (15*1000)
 
+#define DBSERVER  "127.0.0.1"
+#define DBPORT    2941
+#define DBPASSWD  "topsecret"
+#define DBDIR     "base"
+#define DBFILE    "json"
+
+#define DBNAME    "net:"+DBSERVER+":"+hb_ntos(DBPORT )+":"+DBPASSWD+":"+DBDIR+"/"+DBFILE
+
 function Main()
 
     local aData as array
@@ -38,6 +46,22 @@ function Main()
                 aAdd(aData,hData)
                 (cAlias)->(dbSkip())
             end while
+            cData:=hb_jsonEncode(aData,.T.)
+            exit
+        case ("netio")
+            netio_Connect(DBSERVER,DBPORT,nil,DBPASSWD)
+            cDbf:=DBNAME
+            use (cDbf) shared new
+            cAlias:=alias()
+            aData:=array(0)
+            (cAlias)->(dbGoTop())
+            while ((cAlias)->(!eof()))
+                cData:=(cAlias)->JSON
+                hData:=hb_JsonDecode(cData)
+                aAdd(aData,hData)
+                (cAlias)->(dbSkip())
+            end while
+            netio_Disconnect(DBSERVER,DBPORT)
             cData:=hb_jsonEncode(aData,.T.)
             exit
         case ("json-server")
@@ -83,7 +107,7 @@ static function getJsonServerData(lCURL as logical)
     local xValue
 
     //https://github.com/naldodj/naldodj-json-server-multiple-files
-    cURL:="http://naldodj-28214.portmap.io:28214/db/get/JSONToBootstrapTable.json"
+    cURL:="http://naldodj.duckdns.org:28214/db/get/JSONToBootstrapTable.json"
 
     hb_Default(@lCURL,.T.)
     

@@ -34,6 +34,8 @@ procedure main()
 
     local nField as numeric
     local nFields as numeric
+    
+    local pHrbLoad as pointer
 
     local xValue
 
@@ -43,7 +45,7 @@ procedure main()
     cAlias:=alias()
 
     cHTML:=BootstrapStarterTemplate()
-    oHTMLDoc:=THtmlDocument():New(cHTML)
+    oHTMLDoc:=tHTMLDocumentNew(cHTML,@pHrbLoad)
     
     oLang:=oHTMLDoc:root:html
     oLang:attr:={"lang"=>"en"}
@@ -160,5 +162,6 @@ procedure main()
 
     return
 
+{% MH_LoadFile('../pluggins/templates/tHTMLDocumentNew.prg') %}
 {% MH_LoadFile('../pluggins/templates/BootstrapStarterTemplate.prg') %}
 {% MH_LoadFile('../pluggins/templates/addHarbourPRGFileAsCodeText.prg') %}
