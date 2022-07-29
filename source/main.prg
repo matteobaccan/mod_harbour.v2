@@ -5,7 +5,7 @@
 */
 
 #define MODNAME 'mod_harbour.V2.1'
-#define MODVERSION '2.1.007'
+#define MODVERSION '2.1.013'
 
 #ifdef __PLATFORM__WINDOWS
    #define __HBEXTERN__HBWIN__REQUEST
@@ -46,7 +46,10 @@
    #define __HBEXTERN__LETODB__REQUEST
    #include "../letodbf/letodb.hbx"
 #endif   
-
+#ifdef HB_WITH_LIBMONGOC
+   #define __HBEXTERN__HBMONGOC__REQUEST
+   #include "../hbmongoc/hbmongoc.hbx"
+#endif   
 
 #include "mh_apache.ch"
 
