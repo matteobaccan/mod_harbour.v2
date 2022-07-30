@@ -11,11 +11,12 @@ procedure main()
 
     local aOptions as array
     
+    local cHRef as character
     local cHTML as character
     local cTitle as character
     local cBackURL as character
-
-    local nOption as numeric
+    
+    local hOption as hash
     
     local oDiv as object
     local oNode as object
@@ -54,31 +55,37 @@ procedure main()
     oDiv:=oDiv+"div"
     oDiv:attr:='class="list-group"'
 
+    cHRef:="../../../../samples/tHtmlDocument/Bootstrap/tables/"
+
     aOptions:=array(0)
-    aAdd(aOptions,{"../../../../samples/tHtmlDocument/Bootstrap/tables/01-dbf-table-table.prg","01-dbf-table-table.prg","[DBF file]"})
-    aAdd(aOptions,{"../../../../samples/tHtmlDocument/Bootstrap/tables/02-dbf-table-table-striped.prg","02-dbf-table-table-striped.prg","[DBF file]"})
-    aAdd(aOptions,{"../../../../samples/tHtmlDocument/Bootstrap/tables/03-dbf-table-table-hover.prg","03-dbf-table-table-hover.prg","[DBF file]"})
-    aAdd(aOptions,{"../../../../samples/tHtmlDocument/Bootstrap/tables/04-json-to-Bootstrap-Table.prg","04-json-to-Bootstrap-Table.prg","[JSON file]"})
-    aAdd(aOptions,{"../../../../samples/tHtmlDocument/Bootstrap/tables/05-dbf-json-to-Bootstrap-Table.prg","05-dbf-json-to-Bootstrap-Table.prg","[JSON in MEMO field]"})
-    aAdd(aOptions,{"../../../../samples/tHtmlDocument/Bootstrap/tables/06-json-to-Bootstrap-Table.prg","06-json-to-Bootstrap-Table.prg","[JSON file]"})
-    aAdd(aOptions,{"../../../../samples/tHtmlDocument/Bootstrap/tables/07-dbf-json-to-Bootstrap-Table.prg","07-dbf-json-to-Bootstrap-Table.prg","[JSON in MEMO field]"})
-    aAdd(aOptions,{"../../../../samples/tHtmlDocument/Bootstrap/tables/08-json-server-json-to-Bootstrap-Table.prg","08-json-server-json-to-Bootstrap-Table.prg","[JSON-SERVER cURL]"})
-    aAdd(aOptions,{"../../../../samples/tHtmlDocument/Bootstrap/tables/09-json-server-json-to-Bootstrap-Table.prg","09-json-server-json-to-Bootstrap-Table.prg","[JSON-SERVER XMLHTTP]"})
-    aAdd(aOptions,{"../../../../samples/tHtmlDocument/Bootstrap/tables/10-netio-dbf-json-to-Bootstrap-Table.prg","10-netio-dbf-json-to-Bootstrap-Table.prg","[NetIO-JSON in MEMO field]"})
-    
-    for nOption:=1 to Len(aOptions)
+
+    aAdd(aOptions,{"href"=>cHRef,"source"=>"01-dbf-table-table.prg","strong"=>"[DBF file]"})
+    aAdd(aOptions,{"href"=>cHRef,"source"=>"02-dbf-table-table-striped.prg","strong"=>"[DBF file]"})
+    aAdd(aOptions,{"href"=>cHRef,"source"=>"03-dbf-table-table-hover.prg","strong"=>"[DBF file]"})
+    aAdd(aOptions,{"href"=>cHRef,"source"=>"04-json-to-Bootstrap-Table.prg","strong"=>"[JSON file]"})
+    aAdd(aOptions,{"href"=>cHRef,"source"=>"05-dbf-json-to-Bootstrap-Table.prg","strong"=>"[JSON in MEMO field]"})
+    aAdd(aOptions,{"href"=>cHRef,"source"=>"06-json-to-Bootstrap-Table.prg","strong"=>"[JSON in MEMO field]"})
+    aAdd(aOptions,{"href"=>cHRef,"source"=>"07-dbf-json-to-Bootstrap-Table.prg","strong"=>"[JSON in MEMO field]"})
+    aAdd(aOptions,{"href"=>cHRef,"source"=>"08-json-server-json-to-Bootstrap-Table.prg","strong"=>"[JSON-SERVER cURL]"})
+    aAdd(aOptions,{"href"=>cHRef,"source"=>"09-json-server-json-to-Bootstrap-Table.prg","strong"=>"[JSON-SERVER XMLHTTP]"})
+    aAdd(aOptions,{"href"=>cHRef,"source"=>"10-netio-dbf-json-to-Bootstrap-Table.prg","strong"=>"[NetIO-JSON in MEMO field]"})
+
+    for each hOption in aOptions
         /* Operator "+" creates a new <a> node */
         oNode:=oDiv+"a"
         oNode:attr:='class="list-group-item list-group-item-action"'
-        oNode:href:=aOptions[nOption][1]
-        oNode:text:=aOptions[nOption][2]+" "
+        oNode:href:=hOption["href"]+hOption["source"]
+        oNode:text:=hOption["source"]+" "
+        /* Operator "+=" creates a new <strong> node */
         oNode+="strong"
-        oNode:text:=aOptions[nOption][3]
-    next nOption
+        oNode:text:=hOption["strong"]
+    next each
 
-    addHarbourPRGFileAsCodeText(oHTMLDoc:body:Main:div,hb_getenv('PRGPATH')+'/index.prg')
+    oDiv:=oHTMLDoc:body:Main:div
+    addHarbourPRGFileAsCodeText(oDiv,hb_getenv('PRGPATH')+'/01-dbf-table-table.prg')
 
     cHTML:=oHTMLDoc:toString(-9,4)
+    cHTML:=strTran(cHTML,"><",">"+hb_eol()+"<")
 
     ??cHTML
 
