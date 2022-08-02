@@ -83,7 +83,7 @@ procedure main()
                     end
 
                     with object hHtmlNode["DivContainer-4-1-1-4"]:=hHtmlNode["DivContainer-4-1-1"]+'select'
-                        :attr:='class="custom-select custom-select-lg mb-3" multiple aria-label="ViaCEP Options" style="height: 100px;border-style:solid;border-width:1px;display:flex;" name="ViaCEPOptionsName" id="ViaCEPOptionsID"'
+                        :attr:='class="custom-select custom-select-lg mb-3" aria-label="ViaCEP Options" style="height: 100px;border-style:solid;border-width:1px;display:flex;" name="ViaCEPOptionsName" id="ViaCEPOptionsID"'
                         with object hHtmlNode["DivContainer-4-1-1-4-1"]:=hHtmlNode["DivContainer-4-1-1-4"]+'optgroup'
                             :attr:='label="ViaCEP Options"'
                             with object hHtmlNode["DivContainer-4-1-1-4-1-1"]:=hHtmlNode["DivContainer-4-1-1-4-1"]+'option'
@@ -106,7 +106,7 @@ procedure main()
                     end 
 
                     with object hHtmlNode["DivContainer-4-1-1-5"]:=hHtmlNode["DivContainer-4-1-1"]+'select'
-                        :attr:='class="custom-select custom-select-lg mb-3" multiple aria-label="Harbour Options" style="height: 80px;border-style:solid;border-width:1px;display:flex;" name="HarbourOptionsName" id="HarbourOptionsID"'
+                        :attr:='class="custom-select custom-select-lg mb-3" aria-label="Harbour Options" style="height: 80px;border-style:solid;border-width:1px;display:flex;" name="HarbourOptionsName" id="HarbourOptionsID"'
                         with object hHtmlNode["DivContainer-4-1-1-5-1"]:=hHtmlNode["DivContainer-4-1-1-5"]+'optgroup'
                             :attr:='label="Harbour Options"'
                             with object hHtmlNode["DivContainer-4-1-1-5-1-1"]:=hHtmlNode["DivContainer-4-1-1-5-1"]+'option'
