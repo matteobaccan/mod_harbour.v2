@@ -1,14 +1,3 @@
-#ifdef __PLATFORM__WINDOWS
-   #include "c:\harbour\contrib\hbcURL\hbcURL.ch"
-#else
-   #include "/usr/include/harbour/hbcURL.ch"
-#endif
-
-#define TIMEOUT_Resolve (5*1000)
-#define TIMEOUT_Connect (5*1000)
-#define TIMEOUT_Send    (15*1000)
-#define TIMEOUT_Receive (15*1000)
-
 #define DBSERVER  "127.0.0.1"
 #define DBPORT    2941
 #define DBPASSWD  "topsecret"
