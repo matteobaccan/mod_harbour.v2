@@ -16,8 +16,8 @@ procedure main()
     local cZipCode as character
     local cViaCEPOption as character
 
-    local hResult as hash := AP_PostPairs()
     local hHtmlNode as hash := {=>}
+    local hParameters as hash := AP_PostPairs()
 
     local lCURL as logical
 
@@ -25,23 +25,23 @@ procedure main()
     
     local oHTMLDoc as object
 
-    if (!hb_HHasKey(hResult,"ZipInputName"))
-        hResult["ZipInputName"]:="70635815"
+    if (!hb_HHasKey(hParameters,"ZipInputName"))
+        hParameters["ZipInputName"]:="70635815"
     endif
 
-    if (!hb_HHasKey(hResult,"ViaCEPOptionsName"))
-        hResult["ViaCEPOptionsName"]:="json"
+    if (!hb_HHasKey(hParameters,"ViaCEPOptionsName"))
+        hParameters["ViaCEPOptionsName"]:="json"
     endif
 
-    if (!hb_HHasKey(hResult,"HarbourOptionsName"))
-        hResult["HarbourOptionsName"]:="CURL"
+    if (!hb_HHasKey(hParameters,"HarbourOptionsName"))
+        hParameters["HarbourOptionsName"]:="CURL"
     endif
 
-    cZipCode:=allTrim(hResult["ZipInputName"])
+    cZipCode:=allTrim(hParameters["ZipInputName"])
     cZipCode:=strTran(cZipCode,"-","")
 
-    cViaCEPOption:=hResult["ViaCEPOptionsName"]
-    lCURL:=(hResult["HarbourOptionsName"]=="CURL")
+    cViaCEPOption:=hParameters["ViaCEPOptionsName"]
+    lCURL:=(hParameters["HarbourOptionsName"]=="CURL")
 
     cURL:="http://viacep.com.br/ws/"+cZipCode+"/"+cViaCEPOption+"/"
     
