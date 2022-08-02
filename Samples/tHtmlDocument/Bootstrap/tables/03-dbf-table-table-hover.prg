@@ -43,6 +43,8 @@ procedure main()
     use (cDbf) shared new
 
     cAlias:=alias()
+    aDbStruct:=(cAlias)->(dbStruct())
+    nFields:=Len(aDbStruct)
 
     cHTML:=BootstrapStarterTemplate()
     oHTMLDoc:=tHTMLDocumentNew(cHTML,@pHrbLoad)
@@ -115,11 +117,10 @@ procedure main()
         oCell:text:="#"
         oCell:=oCell-"th"
 
-        nFields:=(cAlias)->(fCount())
         for nField:=1 to nFields
             oCell:=oRow:AddNode(THtmlNode():New(oRow,"th"))
             oCell:scope:="col"
-            oCell:text:=(cAlias)->(FieldName(nField))
+            oCell:text:=aDbStruct[nField][DBS_NAME]
             oCell:=oCell-"th"
         next nField
 
@@ -129,7 +130,6 @@ procedure main()
 
     oTBody:=oTable:AddNode(THtmlNode():New(oTable,"tbody"))
 
-        aDbStruct:=(cAlias)->(dbStruct())
         (cAlias)->(dbGoTop())
         while (cAlias)->(!eof())
             oRow:=oTBody:AddNode(THtmlNode():New(oTBody,"tr"))
@@ -154,7 +154,7 @@ procedure main()
 
     (cAlias)->(dbCloseArea())
 
-    addHarbourPRGFileAsCodeText(oHTMLDoc:body:Main:div,hb_getenv('PRGPATH')+'/03-dbf-table-table-hover.prg')
+    addHarbourPRGFileAsCodeText(oHTMLDoc:body:Main:div,AP_GetEnv("SCRIPT_FILENAME"))
 
     cHTML:=oHTMLDoc:toString(-9,4)
 

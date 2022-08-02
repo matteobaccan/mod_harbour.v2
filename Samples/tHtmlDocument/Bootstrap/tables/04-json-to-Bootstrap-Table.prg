@@ -27,7 +27,7 @@ procedure main()
     oHeadTitle:=oHTMLDoc:Head:title
     oHeadTitle:text:="MOD_HARBOUR :: JSON/JSON to Bootstrap table"
 
-    addHarbourPRGFileAsCodeText(oHTMLDoc:body:Main,hb_getenv('PRGPATH')+'/04-json-to-Bootstrap-Table.prg')
+    addHarbourPRGFileAsCodeText(oHTMLDoc:body:Main:div,AP_GetEnv("SCRIPT_FILENAME"))
 
     cHTML:=oHTMLDoc:toString(-9,4)
 

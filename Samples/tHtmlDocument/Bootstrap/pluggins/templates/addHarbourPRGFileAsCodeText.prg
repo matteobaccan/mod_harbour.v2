@@ -22,7 +22,7 @@ procedure addHarbourPRGFileAsCodeText(oParent,cPRGFile)
         oFigureHighlightPre:=oFigureHighlight+"pre"
         oFigureHighlightPreCode:=oFigureHighlightPre+"code"
 
-        cPRGText:=hb_MemoRead(cPRGFile)
+        cPRGText:=hb_MemoRead(getEnvFileName(cPRGFile))
         cPRGText:=strTran(cPRGText,"<","&lt;")
         cPRGText:=strTran(cPRGText,">","&gt;")
 
@@ -31,3 +31,12 @@ procedure addHarbourPRGFileAsCodeText(oParent,cPRGFile)
     oFigureHighlight:=oParent:AddNode(THtmlNode():New(oParent,"/figure"))
 
 return
+
+static function getEnvFileName(cPRGFile)
+    local cPath as character
+    local cName as character
+    local cExt as character
+    local cDrive as character
+    hb_FNameSplit(cPRGFile,@cPath,@cName,@cExt,@cDrive)    
+return(hb_FNameMerge(hb_getenv('PRGPATH')+"/",cName,cExt))
+        

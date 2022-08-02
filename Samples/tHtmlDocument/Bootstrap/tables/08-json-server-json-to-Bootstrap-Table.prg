@@ -168,7 +168,7 @@ var dtbl=new createTable(
 ).create();
     ENDTEXT
 
-    addHarbourPRGFileAsCodeText(oHTMLDoc:body:Main:div,hb_getenv('PRGPATH')+'/08-json-server-json-to-Bootstrap-Table.prg')
+    addHarbourPRGFileAsCodeText(oHTMLDoc:body:Main:div,AP_GetEnv("SCRIPT_FILENAME"))
 
     cHTML:=oHTMLDoc:toString(-9,4)
 

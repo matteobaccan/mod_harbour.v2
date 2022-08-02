@@ -2,7 +2,7 @@ function BootstrapStarterTemplate(cBackURL as character)
 
    local cHTML as character
 
-   hb_default(@cBackURL,"../tables/index.prg")
+   hb_default(@cBackURL,"./")
 
    TEXT INTO cHTML
 <!DOCTYPE html>
