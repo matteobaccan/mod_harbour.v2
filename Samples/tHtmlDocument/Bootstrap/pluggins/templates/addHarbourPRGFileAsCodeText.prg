@@ -39,4 +39,3 @@ static function getEnvFileName(cPRGFile)
     local cDrive as character
     hb_FNameSplit(cPRGFile,@cPath,@cName,@cExt,@cDrive)    
 return(hb_FNameMerge(hb_getenv('PRGPATH')+"/",cName,cExt))
-        
