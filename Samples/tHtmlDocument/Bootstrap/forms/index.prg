@@ -60,7 +60,7 @@ procedure main()
     aOptions:=array(0)
 
     aAdd(aOptions,{"href"=>cHRef,"source"=>"01-get-Brazilian-ZipCode.prg","strong"=>"[VIACEP cURL or XMLHTTP]"})
-    aAdd(aOptions,{"href"=>cHRef,"source"=>"02-get-Brazilian-ZipCodeJQuery.prg","strong"=>"[VIACEP cURL or XMLHTTP]"})
+    aAdd(aOptions,{"href"=>cHRef,"source"=>"02-get-Brazilian-ZipCodeJQuery.prg","strong"=>"[VIACEP cURL]"})
 
     for each hOption in aOptions
         /* Operator "+" creates a new <a> node */
