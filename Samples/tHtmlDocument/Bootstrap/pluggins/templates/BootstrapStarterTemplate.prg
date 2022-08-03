@@ -1,10 +1,17 @@
 function BootstrapStarterTemplate(cBackURL as character)
 
-   local cHTML as character
+    thread static t_cHTMLTemplate as character
 
-   hb_default(@cBackURL,"./")
+    local cHTML as character
+    local cNameSpace as character := ProcName()
 
-   TEXT INTO cHTML
+    hb_default(@cBackURL,"./")
+
+    t_cHTMLTemplate:=MH_HashGet("BootstrapStarterTemplate",t_cHTMLTemplate,cNameSpace)
+
+    if (empty(t_cHTMLTemplate))
+
+        TEXT INTO t_cHTMLTemplate
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -54,8 +61,10 @@ function BootstrapStarterTemplate(cBackURL as character)
         </footer>
     </body>
 </html>
-   ENDTEXT
+        ENDTEXT
+        MH_HashSet("BootstrapStarterTemplate",t_cHTMLTemplate,cNameSpace)
+    endif
    
-   cHTML:=strTran(cHTML,"cBackURL",cBackURL)
+    cHTML:=strTran(t_cHTMLTemplate,"cBackURL",cBackURL)
    
-   return(cHTML)
+    return(cHTML)
