@@ -85,7 +85,6 @@ procedure main()
     addHarbourPRGFileAsCodeText(oDiv,hb_getenv('PRGPATH')+'/01-dbf-table-table.prg')
 
     cHTML:=oHTMLDoc:toString(-9,4)
-    cHTML:=strTran(cHTML,"><",">"+hb_eol()+"<")
 
     ??cHTML
 

@@ -77,7 +77,6 @@ procedure main()
     addHarbourPRGFileAsCodeText(oDiv,AP_GetEnv("SCRIPT_FILENAME"))
 
     cHTML:=oHTMLDoc:toString(-9,4)
-    cHTML:=strTran(cHTML,"><",">"+hb_eol()+"<")
 
     ??cHTML
 

@@ -101,7 +101,6 @@ procedure main()
     end
 
     cHTML:=oHTMLDoc:toString(-9,4)    
-    cHTML:=strTran(cHTML,"><",">"+hb_eol()+"<")
 
     ??cHTML
 
