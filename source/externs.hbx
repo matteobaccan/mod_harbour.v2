@@ -3560,6 +3560,12 @@ extern MH_MODBUILDDATE
 extern MH_INCLUDE
 extern MH_PCODECACHED
 extern MH_SESSION
+extern MH_GETURI
+extern MH_REDIRECT
+extern MH_VIEW
+extern MH_CSS
+extern MH_JS
+extern MH_USEDVM
 
 // Trace...
 

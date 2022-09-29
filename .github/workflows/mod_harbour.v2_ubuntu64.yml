@@ -1,4 +1,4 @@
-name: mod_harbour.v2 for Ubuntu 64
+name: mod_harbour.v2 for Ubuntu 64 
 
 on:
   push:
@@ -32,11 +32,13 @@ jobs:
       uses: actions/checkout@v2
       with:
        repository: mod-harbour/mod_harbour.v2
+       ref: 'v2.0'
        path: harbour/contrib/mod_harbour.v2
 
     - name: Build mod_harbour.v2
       working-directory: harbour/contrib/mod_harbour.v2
       run: |
+        git checkout 'v2.0'
         sudo chmod +x ../../bin/linux/gcc/hbmk2
         ../../bin/linux/gcc/hbmk2 mod_harbour.v2.hbp
         mv ./output/linux/libmod_harbour.v2.so ./output/linux/mod_harbour.v2.so

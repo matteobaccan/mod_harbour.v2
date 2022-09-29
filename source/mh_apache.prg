@@ -1,5 +1,5 @@
 /*
-** mh_apache.prg -- Apache harbour module V2.1
+** mh_apache.prg -- Apache harbour module V2.1.1
 ** (c) DHF, 2020-2022
 ** MIT license
 */
@@ -18,45 +18,48 @@ THREAD STATIC ts_cBuffer_Out  := ''
 THREAD STATIC ts_hHrbs
 THREAD STATIC ts_aFiles
 THREAD STATIC ts_bError
-THREAD STATIC ts_t_hTimer
 THREAD STATIC ts_hConfig
 THREAD STATIC ts_oSession
-STATIC hPP
+THREAD STATIC hPP
 
 // SetEnv Var config. ----------------------------------------
-// MH_CACHE    - Use PcodeCached
-// MH_TIMEOUT   - Timeout for thread
-// MH_PATH_LOG   -  Default HB_GetEnv( 'PRGPATH' )
-// MH_PATH_SESSION  -  Default HB_GetEnv( 'DOCUMENT_ROOT' ) + '/.sessions'
-// MH_SESSION_SEED -  Default Session Seed
-// MH_INITPROCESS  - Init modules at begin of app
-// MH_PHPTEMP        -   Path to PHP prepro temp folder. Note: Add write access to folder.
+// MH_CACHE          - Use PcodeCached
+// MH_TIMEOUT        - Timeout for thread( must be >= 15 sec )
+// MH_PATH_LOG       - Default HB_GetEnv( 'PRGPATH' )
+// MH_PATH_SESSION   - Default HB_GetEnv( 'DOCUMENT_ROOT' ) + '/.sessions'
+// MH_SESSION_SEED   - Default Session Seed
+// MH_INITPROCESS    - Init modules at begin of app
+// MH_PHPTEMP        - Path to PHP prepro temp folder. Note: Add write access to folder.
+// MH_MINIMALVERSION - Set minimal version for execute, ex. 2.1.005
+// MH_DEBUG_ERROR    - If yes/on/1  when error, output to DBWin error traces
 // ------------------------------------------------------------
 
 FUNCTION Main()
 
-   MH_PPRules()
+   mh_PPRules()
 
 RETURN NIL
 
-FUNCTION MH_PPRules()
+FUNCTION mh_PPRules()
 
    LOCAL cOs := OS()
    LOCAL n, aPair, cExt
+ 
 
-   IF hPP == nil
+    IF hPP == nil
 
-      hPP = __pp_Init()
+      hPP := __pp_Init()
 
       DO CASE
       CASE "Windows" $ cOs  ; __pp_Path( hPP, "c:\harbour\include" )
       CASE "Linux" $ cOs   ; __pp_Path( hPP, "~/harbour/include" )
       ENDCASE
 
-      IF ! Empty( hb_GetEnv( "HB_INCLUDE" ) )
-         __pp_Path( hPP, hb_GetEnv( "HB_INCLUDE" ) )
-      ENDIF
-
+      __pp_AddRule( hPP, "#xcommand static [<explist,...>]  => THREAD STATIC [<explist>]" )
+      __pp_AddRule( hPP, "#xcommand THREAD STATIC function <FuncName>([<params,...>]) => STAT FUNCTION <FuncName>( [<params>] )" )
+      __pp_AddRule( hPP, "#xcommand THREAD STATIC procedure <ProcName>([<params,...>]) => STAT PROCEDURE <ProcName>( [<params>] )" )
+	  
+      __pp_AddRule( hPP, "#define __MODHARBOUR__" )
       __pp_AddRule( hPP, "#xcommand ? [<explist,...>] => ap_Echo( '<br>' [,<explist>] )" )
       __pp_AddRule( hPP, "#xcommand ?? [<explist,...>] => ap_Echo( [<explist>] )" )
       __pp_AddRule( hPP, "#define CRLF hb_OsNewLine()" )
@@ -74,17 +77,23 @@ FUNCTION MH_PPRules()
       __pp_AddRule( hPP, "#xcommand FINALLY => ALWAYS" )
       __pp_AddRule( hPP, "#xcommand DEFAULT <v1> TO <x1> [, <vn> TO <xn> ] => ;" + ;
          "IF <v1> == NIL ; <v1> := <x1> ; END [; IF <vn> == NIL ; <vn> := <xn> ; END ]" )
+		 
+	
+    ENDIF
+	
+	IF ! Empty( hb_GetEnv( "HB_INCLUDE" ) )
+	  __pp_Path( hPP, hb_GetEnv( "HB_INCLUDE" ) )
+	ENDIF			 
 
-   ENDIF
 
 RETURN hPP
 
 
 // ------------------------------------------------------------------ //
 
-FUNCTION MH_Runner()
+FUNCTION mh_Runner()
 
-   LOCAL cFileName, cFilePath, pThreadWait, tFilename, cCode, cCodePP, oHrb
+   LOCAL cFileName, cFilePath, pThreadWait, tFilename, cCode, cCodePP, oHrb, cExt
    LOCAL disablecache := .F.
 
    // Init thread statics vars
@@ -98,13 +107,15 @@ FUNCTION MH_Runner()
    ts_hConfig   := { => }
 
    ts_hConfig[ 'cache' ] := AP_GetEnv( 'MH_CACHE' ) == '1' .OR. Lower( AP_GetEnv( 'MH_CACHE' ) ) == 'yes'
-   ts_hConfig[ 'timeout' ] := Max( Val( AP_GetEnv( 'MH_TIMEOUT' ) ), 15 )
+   ts_hConfig[ 'timeout' ] := Val( AP_GetEnv( 'MH_TIMEOUT' ) ) // 15 Sec max
 
    // ------------------------
 
-   ErrorBlock( {| oError | MH_ErrorSys( oError ), Break( oError ) } )
+   ErrorBlock( {| oError | mh_ErrorSys( oError ), Break( oError ) } )
 
-   ts_t_hTimer = hb_idleAdd( {|| MH_RequestMaxTime( hb_threadSelf(), ts_hConfig[ 'timeout' ] ) }  )
+   IF ( ts_hConfig[ 'timeout' ] != 0 )
+      pThreadWait := hb_threadStart( @mh_RequestMaxTime(), hb_threadSelf(), ts_hConfig[ 'timeout' ] )
+   ENDIF
 
    cFileName = ap_FileName()
 
@@ -114,37 +125,40 @@ FUNCTION MH_Runner()
 
       hb_SetEnv( "PRGPATH", cFilePath )
 
-// We can load different modules at the beginning of our program
 
-      mh_InitProcess()
+      mh_InitProcess()		//	We can load different modules at the beginning of our program
+	  mh_MinimalVersion()		//	Check if required a minimal version of mod
 
-// ------------------------
+      cExt := Lower( hb_FNameExt( cFileName ) )
 
-      IF Lower( Right( cFileName, 4 ) ) == ".hrb"
+      SWITCH cExt
+
+      CASE ".hrb"
 
          hb_hrbDo( hb_hrbLoad( 2, cFileName ), ap_Args() )
+         EXIT
 
-      ELSE // case prg
+      CASE ".prg"
 
-         cCode := MemoRead( cFileName )
+         cCode := hb_MemoRead( cFileName )
 
          IF ts_hConfig[ 'cache' ]
 
             hb_FGetDateTime( cFilename, @tFilename )
 
-            IF ( iif( hb_HHasKey( MH_PcodeCached(), cFilename ), tFilename > MH_PcodeCached()[ cFilename ][ 2 ], .T. ) )
+            IF ( iif( hb_HHasKey( mh_PcodeCached(), cFilename ), tFilename > mh_PcodeCached()[ cFilename ][ 2 ], .T. ) )
 
                oHrb := mh_Compile( cCode )
 
                IF ! Empty( oHrb )
 
-                  MH_PcodeCached()[ cFilename ] = { oHrb, tFilename }
+                  mh_PcodeCached()[ cFilename ] = { oHrb, tFilename }
 
                ENDIF
 
             ELSE
 
-               oHrb = MH_PcodeCached()[ cFilename ][ 1 ]
+               oHrb = mh_PcodeCached()[ cFilename ][ 1 ]
 
             ENDIF
 
@@ -157,11 +171,19 @@ FUNCTION MH_Runner()
 
          ELSE
 
-            MH_Execute( cCode, ap_Args() )
+            mh_Execute( cCode, ap_Args() )
 
          ENDIF
 
-      ENDIF
+         EXIT
+
+      CASE ".view"
+
+         ap_Echo( MH_InlinePRG( mh_View( hb_FNameNameExt( cFileName ), iif( !Empty( ap_GetPairs() ), ap_GetPairs(), ap_PostPairs() ) ) ) )
+
+         EXIT
+
+      ENDSWITCH
 
       // Output of buffered text
 
@@ -181,17 +203,17 @@ FUNCTION MH_Runner()
 
    ENDIF
 
-RETURN mh_ExitStatus()
+RETURN
 
 // ----------------------------------------------------------------//
 
-FUNCTION MH_Config()
+FUNCTION mh_Config()
 
 RETURN ts_hConfig
 
 // ----------------------------------------------------------------//
 
-FUNCTION MH_oSession( o )
+FUNCTION mh_oSession( o )
 
    IF ValType( o ) == 'O'
       ts_oSession := o
@@ -201,15 +223,11 @@ RETURN ts_oSession
 
 // ----------------------------------------------------------------//
 
-FUNCTION MH_RequestMaxTime( pThread, nTime )
+FUNCTION mh_RequestMaxTime( pThread, nTime )
 
-   sec := Seconds()
+   hb_idleSleep( nTime )
 
-   DO WHILE ( Seconds() - sec < nTime )
-      hb_idleSleep( 0.01 )
-   ENDDO
-
-   mh_ExitStatus( 408 )
+   mh_ExitStatus( 508 )
 
    while( hb_threadQuitRequest( pThread ) )
       hb_idleSleep( 0.01 )
@@ -270,7 +288,7 @@ RETURN
  tenga en uso.
 */
 
-FUNCTION MH_LoadHrb( cHrbFile_or_oHRB )
+FUNCTION mh_LoadHrb( cHrbFile_or_oHRB )
 
    LOCAL lResult  := .F.
    LOCAL cType  := ValType( cHrbFile_or_oHRB )
@@ -289,7 +307,7 @@ FUNCTION MH_LoadHrb( cHrbFile_or_oHRB )
          ENDIF
       ELSE
 
-         MH_DoError( "MH_LoadHrb() file not found: " + cFile  )
+         mh_DoError( "MH_LoadHrb() file not found: " + cFile  )
 
       ENDIF
 
@@ -303,7 +321,7 @@ FUNCTION MH_LoadHrb( cHrbFile_or_oHRB )
 
 // ----------------------------------------------------------------//
 
-FUNCTION MH_LoadHrb_Clear()
+FUNCTION mh_LoadHrb_Clear()
 
    LOCAL n
 
@@ -317,7 +335,7 @@ FUNCTION MH_LoadHrb_Clear()
 
 // ----------------------------------------------------------------//
 
-FUNCTION MH_LoadHrb_Show()
+FUNCTION mh_LoadHrb_Show()
 
    LOCAL n
 
@@ -330,9 +348,13 @@ FUNCTION MH_LoadHrb_Show()
 
 // ----------------------------------------------------------------//
 
-FUNCTION MH_LoadFile( cFile )
+FUNCTION mh_LoadFile( cFile )
 
-   LOCAL cPath_File := hb_GetEnv( "PRGPATH" ) + '/' + cFile
+   LOCAL cPath_File 
+   
+   cFile := lower( cFile )
+   
+   cPath_File := hb_GetEnv( "PRGPATH" ) + '/' + cFile
 
    IF AScan( ts_aFiles, cFile ) > 0
       RETU ''
@@ -348,7 +370,7 @@ FUNCTION MH_LoadFile( cFile )
       RETURN hb_MemoRead( cPath_File )
 
    ELSE
-      MH_DoError( "MH_LoadFile() file not found: " + cPath_File  )
+      mh_DoError( "mh_LoadFile() file not found: " + cPath_File  )
    ENDIF
 
 
@@ -356,7 +378,74 @@ FUNCTION MH_LoadFile( cFile )
 
 // ----------------------------------------------------------------//
 
-FUNCTION MH_ErrorSys( oError, cCode, cCodePP )
+FUNCTION mh_View( cFile, ... )
+
+   LOCAL cPath_File  := hb_GetEnv( "PRGPATH" ) + '/' + cFile
+   LOCAL cCode   := ''
+
+   IF "Linux" $ OS()
+      cPath_File = StrTran( cPath_File, '\', '/' )
+   ENDIF
+
+   IF File( cPath_File )
+
+      cCode := mh_ReplaceBlocks( hb_MemoRead( cPath_File ), '{{', '}}', '', ... )
+
+   ELSE
+      mh_DoError( "mh_View() file not found: " + cPath_File  )
+   ENDIF
+
+   RETU cCode
+
+// ----------------------------------------------------------------//
+
+FUNCTION mh_Css( cFile )
+
+   LOCAL cPath_File  := hb_GetEnv( "PRGPATH" ) + '/' + cFile
+   LOCAL cCode   := ''
+
+   IF "Linux" $ OS()
+      cPath_File = StrTran( cPath_File, '\', '/' )
+   ENDIF
+
+   IF File( cPath_File )
+
+      cCode := '<style>'
+      cCode += hb_MemoRead( cPath_File )
+      cCode += '</style>'
+   ELSE
+      mh_DoError( "mh_Css() file not found: " + cPath_File  )
+   ENDIF
+
+   RETU cCode
+
+
+// ----------------------------------------------------------------//
+
+FUNCTION mh_Js( cFile )
+
+   LOCAL cPath_File  := hb_GetEnv( "PRGPATH" ) + '/' + cFile
+   LOCAL cCode   := ''
+
+   IF "Linux" $ OS()
+      cPath_File = StrTran( cPath_File, '\', '/' )
+   ENDIF
+
+   IF File( cPath_File )
+
+      cCode := '<script>'
+      cCode += hb_MemoRead( cPath_File )
+      cCode += '</script>'
+   ELSE
+      mh_DoError( "mh_Js() file not found: " + cPath_File  )
+   ENDIF
+
+   RETU cCode
+
+
+// ----------------------------------------------------------------//
+
+FUNCTION mh_ErrorSys( oError, cCode, cCodePP )
 
    LOCAL hError
 
@@ -369,16 +458,16 @@ FUNCTION MH_ErrorSys( oError, cCode, cCodePP )
 
 // Recover data info error
 
-   hError := MH_ErrorInfo( oError, cCode, cCodePP )
+   hError := mh_ErrorInfo( oError, cCode, cCodePP )
 
 
    IF ValType( ts_bError ) == 'B'
 
-      Eval( ts_bError, hError )
+      Eval( ts_bError, hError, oError )
 
    ELSE
 
-      MH_ErrorShow( hError )
+      mh_ErrorShow( hError, oError )
 
    ENDIF
 
@@ -394,7 +483,7 @@ FUNCTION MH_ErrorSys( oError, cCode, cCodePP )
 
    RETU NIL
 
-FUNCTION MH_ErrorBlock( bBlockError )
+FUNCTION mh_ErrorBlock( bBlockError )
 
    ts_bError := bBlockError
 
@@ -402,7 +491,7 @@ FUNCTION MH_ErrorBlock( bBlockError )
 
 // ----------------------------------------------------------------//
 
-FUNCTION MH_DoError( cDescription, cSubsystem, nSubCode )
+FUNCTION mh_DoError( cDescription, cSubsystem, nSubCode )
 
    LOCAL oError := ErrorNew()
 
@@ -419,7 +508,7 @@ RETURN NIL
 
 // ----------------------------------------------------------------//
 
-FUNCTION MH_InitProcess()
+FUNCTION mh_InitProcess()
 
    LOCAL cPath, cPathFile, cFile, cModules
    LOCAL aModules  := {}
@@ -455,14 +544,22 @@ FUNCTION MH_InitProcess()
                   CASE cExt == '.hrb'
 
                      mh_HashModules()[ cFile ] := hb_hrbLoad( HB_HRB_BIND_OVERLOAD, cPathFile )
+					 
+					IF lower( HB_FNameName( cPathFile ) ) == 'init' 							
+						hb_hrbDo( mh_HashModules()[ cFile ] )							
+					ENDIF 					 
 
                   CASE cExt == '.prg'
 
-                     oHrb := MH_Compile( hb_MemoRead( cPathFile ) )
+                     oHrb := mh_Compile( hb_MemoRead( cPathFile ) )
 
                      IF ! Empty( oHrb )
 
                         mh_HashModules()[ cFile ] := hb_hrbLoad( HB_HRB_BIND_OVERLOAD, oHrb )
+						
+						IF lower( HB_FNameName( cPathFile ) ) == 'init' 							
+							hb_hrbDo( mh_HashModules()[ cFile ] )							
+						ENDIF 
 
                      ENDIF
 
@@ -484,7 +581,7 @@ FUNCTION MH_InitProcess()
 
 // Error ?
 
-               MH_DoError( "MH_InitProcess() file not found: " + cPathFile  )
+               mh_DoError( "mh_InitProcess() file not found: " + cPathFile  )
 
             ENDIF
 
@@ -494,9 +591,51 @@ FUNCTION MH_InitProcess()
 
    ENDIF
 
-   MH_AddPPRules()
+   mh_AddPPRules()
 
 RETURN NIL
+
+// ----------------------------------------------------------------//
+
+FUNCTION mh_MinimalVersion()
+
+    LOCAL cMinVersion := AP_GetEnv( 'MH_MINIMALVERSION' )   	
+	
+	IF !empty( cMinVersion ) .AND. mh_modversion() < cMinVersion		
+		
+		mh_DoError('Minimal version modHarbour required: ' + cMinVersion + ;
+					'<br>' + 'Version actual: ' + mh_modversion() )
+		__Quit() 					
+	
+	ENDIF
+
+RETURN NIL
+
+// ----------------------------------------------------------------//
+
+FUNCTION mh_GetUri()
+
+   LOCAL cUri
+
+   IF !Empty( ap_GetEnv( 'HTTPS' ) ) .AND. ( 'on' == ap_GetEnv( 'HTTPS' ) )
+      cUri := 'https://'
+   ELSE
+      cUri := 'http://'
+   ENDIF
+
+   cUri += ap_GetEnv( 'HTTP_HOST' ) + hb_FNameDir( ap_GetEnv( 'SCRIPT_NAME' ) )
+
+   RETU cUri
+
+// ----------------------------------------------------------------//
+
+FUNCTION mh_Redirect( cUrl )
+
+   ap_HeadersOutSet( "Location", cUrl  )
+
+   mh_ExitStatus( 302 )
+
+   RETU NIL
 
 // ----------------------------------------------------------------//
 
@@ -519,66 +658,56 @@ PHB_ITEM * phHash;
 PHB_ITEM * phHashConfig;
 void * pmh_StartMutex;
 void * pmh_EndMutex;
+int nUsedVm;
 
 //----------------------------------------------------------------//
 
 #ifdef _WINDOWS_
 
-   #include <windows.h>
-
-   BOOL APIENTRY DllMain( HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved ) {
-   hModule = hModule;
-   lpReserved = lpReserved;
-
-   switch( ul_reason_for_call ) {
-   case DLL_PROCESS_ATTACH:
-      hb_vmInit( HB_TRUE );
-      hPcodeCached   = hb_hashNew(NULL);
-      hHashModules   = hb_hashNew(NULL);
-      break;
-
-   case DLL_THREAD_ATTACH:
-      break;
-
-   case DLL_THREAD_DETACH:
-      break;
-
-   case DLL_PROCESS_DETACH:
-      hb_vmQuit();
-      break;
-   }
-   return TRUE;
-   }
-#else
-
-   void DLL_PROCESS_ATTACH( void ) __attribute__((constructor));
-   void DLL_PROCESS_DETACH( void ) __attribute__((destructor));
-
-   void DLL_PROCESS_ATTACH( void ) {
-      if( ! hb_vmIsActive() ) {
-         hb_vmInit( HB_TRUE );
-         hPcodeCached   = hb_hashNew(NULL);
-         hHashModules   = hb_hashNew(NULL);
-      }
-   }
-
-   void DLL_PROCESS_DETACH( void ) {
-      hb_vmQuit();
-   }
+#include <windows.h>
 
 #endif
 
 //----------------------------------------------------------------//
 
-HB_EXPORT_ATTR int mh_apache( request_rec * _pRequestRec, void * _phHash, void * _phHashConfig, void * _pmh_StartMutex, void * _pmh_EndMutex )
+HB_EXPORT_ATTR void mh_init( void * _phHash, void * _phHashConfig, void * _pmh_StartMutex, void * _pmh_EndMutex )
+{
+   if( ! hb_vmIsActive() ) {
+      hb_vmInit( HB_TRUE );
+      if ( _phHash != NULL ) {
+          phHash = _phHash;
+          phHashConfig = _phHashConfig;
+      };
+      hPcodeCached   = hb_hashNew(NULL);
+      hHashModules   = hb_hashNew(NULL);
+      pmh_StartMutex = _pmh_StartMutex;
+      pmh_EndMutex = _pmh_EndMutex;
+   };
+}
+
+//----------------------------------------------------------------//
+
+HB_EXPORT_ATTR PHB_ITEM mh_HashInit( void * _phHash )
+{
+   phHash = hb_hashNew(NULL);
+   return phHash;
+}
+
+//----------------------------------------------------------------//
+
+HB_EXPORT_ATTR PHB_ITEM mh_HashConfigInit( void * _phHashConfig )
+{
+   phHashConfig = hb_hashNew(NULL);
+   return phHashConfig;
+}
+
+//----------------------------------------------------------------//
+
+HB_EXPORT_ATTR void mh_apache( request_rec * _pRequestRec, int _nUsedVm )
 {
    szBody = NULL;
    pRequestRec = _pRequestRec;
-   phHash = _phHash;
-   phHashConfig = _phHashConfig;
-   pmh_StartMutex = _pmh_StartMutex;
-   pmh_EndMutex = _pmh_EndMutex;
-
+   nUsedVm = _nUsedVm;      
    hb_vmThreadInit( NULL );
    HB_FUNC_EXEC(MH_RUNNER);
    hb_vmThreadQuit();
@@ -692,6 +821,13 @@ HB_FUNC(MH_EXITSTATUS)
    {
       rec->status = hb_parni(1);
    };
+}
+
+//----------------------------------------------------------------//
+
+HB_FUNC( MH_USEDVM )
+{
+   hb_retni( nUsedVm );
 }
 
 //----------------------------------------------------------------//

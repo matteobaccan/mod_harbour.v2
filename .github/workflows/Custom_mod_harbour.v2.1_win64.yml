@@ -1,0 +1,146 @@
+name: Custom mod_harbour.v2.1 for Windows 64 
+
+on:
+
+  workflow_dispatch:
+    inputs:
+      ADS:
+        type: boolean
+        description: Include ADS
+      TDOLPHIN:
+        type: boolean
+        description: Include TDOLPHIN
+      LETODB:
+        type: boolean
+        description: Include LETODB
+      LETODBF:
+        type: boolean
+        description: Include LETODBF
+      HBMONGOC:
+        type: boolean
+        description: Include HBMONGOC
+      HBZEBRA:
+        type: boolean
+        description: Include HBZEBRA
+
+jobs:
+  build:
+    runs-on: windows-2019
+    
+    steps:
+      - uses: actions/checkout@v2
+    
+      - name: Checkout harbour/core repo
+        uses: actions/checkout@v2
+        with:
+          repository: harbour/core
+          path: harbour
+  
+      - name: Updating Harbour hbssl for new OpenSSL 
+        run: |
+          (Get-Content -path harbour\contrib\hbssl\hbssl.hbp) -replace 'libeay32','libcrypto-1_1-x64' | Set-Content -path harbour\contrib\hbssl\hbssl.hbp
+          (Get-Content -path harbour\contrib\hbssl\hbssl.hbp) -replace 'ssleay32','libssl-1_1-x64' | Set-Content -path harbour\contrib\hbssl\hbssl.hbp
+          (Get-Content -path harbour\contrib\hbssl\hbssl.hbc) -replace 'libeay32','libcrypto-1_1-x64' | Set-Content -path harbour\contrib\hbssl\hbssl.hbc
+          (Get-Content -path harbour\contrib\hbssl\hbssl.hbc) -replace 'ssleay32','libssl-1_1-x64' | Set-Content -path harbour\contrib\hbssl\hbssl.hbc
+         
+      - name: Download and extract Harbour/Apache24/3rdContribs binaries
+        shell: cmd      
+        run: |
+          curl -OL https://raw.githubusercontent.com/diegofazio/harbour_binaries/master/Windows/harbour_windows_64.zip
+          7z x -y harbour_windows_64.zip -oharbour
+          curl -OL https://raw.githubusercontent.com/diegofazio/harbour_binaries/master/apache24/win64.zip
+          7z x -y win64.zip -oc:\Apache24
+          curl -OL https://raw.githubusercontent.com/diegofazio/harbour_binaries/master/contrib/3rd_contribs.zip
+          7z x -y 3rd_contribs.zip -oharbour/contrib          
+
+      - name: Checkout mod_harbour.v2 repo
+        uses: actions/checkout@v2
+        with:
+          repository: mod-harbour/mod_harbour.v2
+          path: harbour/contrib/mod_harbour.v2
+
+      - name: Include ADS
+        if: github.event.inputs.ADS == 'true'
+        shell: cmd  
+        run: |
+          curl -OL https://raw.githubusercontent.com/diegofazio/harbour_binaries/master/ads64/acesdk-x64.zip
+          7z x -y acesdk-x64.zip -oc:\acesdk
+
+      - name: Include TDOLPHIN
+        if: github.event.inputs.TDOLPHIN == 'true'
+        run: |
+          curl -OL https://raw.githubusercontent.com/diegofazio/harbour_binaries/master/dependencies/win64/libmariadb.dll
+
+      - name: Include LETODB
+        if: github.event.inputs.LETODB == 'true'
+        shell: cmd  
+        run: |
+          xcopy .\harbour\contrib\letodb\lib\*.lib .\harbour\lib\win\msvc64 /Y 
+
+      - name: Include LETODBF
+        if: github.event.inputs.LETODBF == 'true'
+        shell: cmd  
+        run: |
+          xcopy .\harbour\contrib\letodbf\lib\*.lib .\harbour\lib\win\msvc64 /Y 
+          del .\harbour\contrib\letodb\rddleto.hbc 
+
+      - name: Include HBMONGOC
+        if: github.event.inputs.HBMONGOC == 'true'
+        shell: cmd  
+        run: |
+          xcopy .\harbour\contrib\hbmongoc\lib\win\*.lib .\harbour\lib\win\msvc64 /Y 
+          curl -OL https://raw.githubusercontent.com/diegofazio/harbour_binaries/master/mongoc/mongo-c-driver.zip
+          7z x -y mongo-c-driver.zip -oc:\mongo-c-driver
+          xcopy c:\mongo-c-driver\lib\*.lib .\harbour\lib\win\msvc64 /Y 
+
+      - name: Build mod_harbour.v2.1
+        working-directory: harbour/contrib/mod_harbour.v2
+        shell: cmd
+        run: |
+          if "${{ github.event.inputs.ADS }}" == "true" (set ADS=-DHB_WITH_ADS=c:\acesdk rddads.hbc)
+          if "${{ github.event.inputs.TDOLPHIN }}" == "true" (set TDOLPHIN=-DHB_WITH_TDOLPHIN=yes tdolphin.hbc)
+          if "${{ github.event.inputs.LETODB }}" == "true" (set LETODB=-DHB_WITH_LETODB=yes rddleto.hbc) 
+          if "${{ github.event.inputs.LETODBF }}" == "true" (set LETODBF=-DHB_WITH_LETODBF=yes letodb.hbc ) 
+          if "${{ github.event.inputs.HBMONGOC }}" == "true" (set HBMONGOC=-DHB_WITH_LIBMONGOC=yes -DHB_WITH_LIBBSON=yes hbmongoc.hbc ) 
+          if "${{ github.event.inputs.HBZEBRA }}" == "true" (set HBZEBRA=-DHB_WITH_ZEBRA=yes hbzebra.hbc )
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
+          ..\..\bin\win\msvc64\hbmk2 mod_harbour.v2.1.hbp -comp=msvc64 -Lc:\Apache24\lib -Ic:\Apache24\include %ADS% %TDOLPHIN% %LETODB% %LETODBF% %HBMONGOC% %HBZEBRA%
+
+      - name: Extract MODVERSION and create artifact folder
+        id: generate-name
+        run: |
+          mkdir artifact
+          mkdir artifact\Samples
+          $MODVERSION = findstr /C:"#define MODVERSION" harbour\contrib\mod_harbour.v2\source\main.prg
+          $MODVERSION = $MODVERSION.Replace("#define MODVERSION","")
+          $MODVERSION = $MODVERSION.Replace("'","")
+          $MODVERSION = $MODVERSION.Trim()
+          echo "::set-output name=modversion::$MODVERSION"  
+          echo Mod-harbour.v2.1-Ver:$MODVERSION >>.\artifact\notes.txt
+
+      - name: Check if custom
+        id: generate-custom
+        if: github.event.inputs.ADS == 'true' || github.event.inputs.TDOLPHIN == 'true' || github.event.inputs.LETODB == 'true' || github.event.inputs.LETODBF == 'true' || github.event.inputs.HBMONGOC == 'true'
+        run: echo "::set-output name=custom::custom"  
+
+      - name: Prepare artifact
+        shell: cmd        
+        run: |
+          xcopy harbour\contrib\mod_harbour.v2\Samples\*.* .\artifact\Samples /E /H /C /I
+          xcopy harbour\contrib\mod_harbour.v2\output\win64\mod_harbour.v2.so .\artifact /E /H /C /I
+          xcopy harbour\contrib\mod_harbour.v2\output\win64\libmhapache.dll .\artifact /E /H /C /I
+          if "${{ github.event.inputs.ADS }}" == "true" ( mkdir artifact\ads | xcopy c:\acesdk\*.dll .\artifact\ads /E /H /C /I | echo Include rddads - ADS ver 11.10 >> .\artifact\notes.txt )
+          if "${{ github.event.inputs.TDOLPHIN }}" == "true" ( mkdir artifact\tdolphin | xcopy libmariadb.dll .\artifact\tdolphin | echo Include TDolphin - MariaDB ver 10.3.6  >> .\artifact\notes.txt )
+          if "${{ github.event.inputs.LETODB }}" == "true" ( echo Include LETODB ver 2.17 b3  >> .\artifact\notes.txt )
+          if "${{ github.event.inputs.LETODBF }}" == "true" ( echo Include LETODBF ver 2021-04-29 22:51  >> .\artifact\notes.txt )
+          if "${{ github.event.inputs.HBMONGOC }}" == "true" ( mkdir artifact\mongoc | xcopy c:\mongo-c-driver\bin\*.dll .\artifact\mongoc /E /H /C /I | echo Include hbmongoc - mongo-c-driver ver 1.21.1 >> .\artifact\notes.txt )
+          if "${{ github.event.inputs.HBZEBRA }}" == "true" ( echo Include HBZEBRA >> .\artifact\notes.txt )
+                   
+      - name: Upload mod_harbour.v2.so/libmhapache.dll/Samples to artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: mod_harbour.V${{ steps.generate-name.outputs.modversion }}_${{ steps.generate-custom.outputs.custom }}_win64
+          path: artifact
+
+   
+

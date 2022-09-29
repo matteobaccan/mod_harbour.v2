@@ -13,13 +13,16 @@
 
 function _d( ... )
 
+#ifdef __PLATFORM__WINDOWS
 retu WAPI_OutputDebugString( MH_Out( 'dbg', ... ) )
-
+#else
+retu ""
+#endif
 //	--------------------------------------------------------- //
 
 function _w( ... )
 
-	ap_echo(  '<code>' + MH_Out( 'web', ... ) + '</code>' )	
+	ap_echo(  '<br><code>' + MH_Out( 'web', ... ) + '</code>' )	
 	
 retu nil
 

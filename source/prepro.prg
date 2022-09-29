@@ -1,5 +1,7 @@
 /*
-**  prepro.prg -- Execution module
+** prepro.prg -- Execution module
+** Developed by Antonio Linares 
+** MIT license https://github.com/FiveTechSoft/mod_harbour/blob/master/LICENSE
 **
 */
 
@@ -70,7 +72,7 @@ FUNCTION MH_Compile( cCode, ... )
 
    mh_ReplaceBlocks( @cCode, "{%", "%}" )   
 
-   cCodePP := __pp_Process( mh_PPRules(), cCode )
+   cCodePP := __pp_Process( mh_PPRules(), cCode )   
 
 	oHrb = HB_CompileFromBuf( cCodePP, .T., "-n", "-q2", "-I" + cHBheader, ;
 			"-I" + hb_GetEnv( "HB_INCLUDE" ), hb_GetEnv( "HB_USER_PRGFLAGS" ) )	
@@ -106,7 +108,7 @@ FUNCTION MH_InlinePRG( cText, oTemplate, cParams, ... )
       IF oTemplate != nil
          AAdd( oTemplate:aSections, cCode )
       ENDIF
-      cText = SubStr( cText, 1, nStart - 1 ) + ( cResult := mh_ExecInline( cCode, cParams, ... ) ) + ;
+      cText = SubStr( cText, 1, nStart - 1 ) + ( cResult := mh_ValtoChar( mh_ExecInline( cCode, cParams, ... ) ) ) + ;
          SubStr( cText, nStart + nEnd + 6 )
       IF oTemplate != nil
          AAdd( oTemplate:aResults, cResult )
@@ -137,6 +139,7 @@ FUNCTION MH_ReplaceBlocks( cCode, cStartBlock, cEndBlock, cParams, ... )
 	LOCAL lReplaced := .F.
    
 			
+	hb_default( @cStartBlock, "{{" )
 	hb_default( @cEndBlock, "}}" )
 	hb_default( @cParams, "" )   
 
