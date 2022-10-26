@@ -48,11 +48,11 @@ function BootstrapStarterTemplate(cBackURL as character)
                     <i id="ID_fixed-action-btn-i-arrow_back_icon" class="material-icons" style="user-select: none;">arrow_back</i>
                 </a>
                 <script>
-                    <!-- https://materializecss.com/floating-action-button.html -->
+                    /*<!-- https://materializecss.com/floating-action-button.html -->*/
                     $(document).ready(function(){
                         $('.fixed-action-btn').floatingActionButton();
                     });
-                    <!-- https://materializecss.com/tooltips.html -->
+                    /*<!-- https://materializecss.com/tooltips.html -->*/
                     $(document).ready(function(){
                         $('.tooltipped').tooltip();
                     });
