@@ -44,7 +44,7 @@ procedure main()
 
     /* Operator ":" returns first "div" from body (creates if not existent) */
     oDiv:=oHTMLDoc:body:Main:div
-    oDiv:attr:='class="container"'
+    oDiv:attr:='class="container-fluid"'
 
     /* Operator ":" returns first "h4" from div (creates if not existent) */
     oNode:=oDiv:h4

@@ -44,7 +44,7 @@ procedure main()
     oHeadTitle:text:="MOD_HARBOUR :: JSON/JSON to Bootstrap table"
 
     oDivContainer:=oHTMLDoc:body:Main:div
-    oDivContainer:attr:='class="container"'
+    oDivContainer:attr:='class="container-fluid"'
 
     oDivPageHeader:=oDivContainer+"div"
     oDivPageHeader:attr:='class="page-header"'
