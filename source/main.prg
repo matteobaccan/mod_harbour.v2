@@ -72,5 +72,3 @@ retu MODNAME
 function MH_ModVersion()
 
 retu MODVERSION 
-
-// ----------------------------------------------------------------//
