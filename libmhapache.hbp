@@ -64,6 +64,7 @@ source/sessions.prg
 {allmsvc}hbnetio.hbc
 {allmsvc}hbssl.hbc
 {allmsvc}hbmisc.hbc
+{allmsvc}hbmxml.hbc
 
 {gcc}-dflag=@libs.txt
 {darwin}-dflag=@libs_osx.txt
