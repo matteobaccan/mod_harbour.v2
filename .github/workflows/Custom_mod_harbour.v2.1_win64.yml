@@ -31,10 +31,10 @@ jobs:
     runs-on: windows-2025
     
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
     
       - name: Checkout harbour/core repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
         with:
           repository: harbour/core
           path: harbour
@@ -57,7 +57,7 @@ jobs:
           7z x -y 3rd_contribs.zip -oharbour/contrib          
 
       - name: Checkout mod_harbour.v2 repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
         with:
           repository: mod-harbour/mod_harbour.v2
           path: harbour/contrib/mod_harbour.v2
@@ -149,7 +149,7 @@ jobs:
           if "${{ github.event.inputs.HBZEBRA }}" == "true" ( echo Include HBZEBRA >> .\artifact\notes.txt )
                    
       - name: Upload mod_harbour.v2.so/libmhapache.dll/Samples to artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: mod_harbour.V${{ steps.generate-name.outputs.modversion }}_${{ steps.generate-custom.outputs.custom }}_win64
           path: artifact
